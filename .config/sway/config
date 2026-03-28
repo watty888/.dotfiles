@@ -17,6 +17,14 @@ set $right l
 set $term /home/watty/.local/bin/kitty
 # Your preferred application launcher
 set $menu fuzzel
+# Lock command with styling
+set $lock swaylock -f -c 000000 \
+    --screenshots \
+    --effect-blur 7x5 \
+    --effect-vignette 0.5:0.5 \
+    --fade-in 0.2 \
+    --indicator \
+    --grace 3 \
 
 ### Output configuration
 #
@@ -34,9 +42,9 @@ output * bg /home/watty/Pictures/Wallpapers/5356237.jpg fill
 # Example configuration:
 #
 exec swayidle -w \
-         timeout 300 'swaylock -f -c 000000' \
+         timeout 300 '$lock' \
          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-         before-sleep 'swaylock -f -c 000000'
+         before-sleep '$lock'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -220,8 +228,8 @@ bindsym $mod+r mode "resize"
     bindsym $mod+Shift+Ctrl+e exec pkill -INT wf-recorder
 
     # Lock the screen using swaylock
-    bindsym $mod+Ctrl+l exec swaylock -f -c 000000
-#
+    bindsym $mod+Ctrl+l exec $lock
+
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
@@ -245,6 +253,7 @@ client.urgent           #1e1e2e #f38ba8 #ffffff #f38ba8 #f38ba8
 #         inactive_workspace #32323200 #32323200 #5c5c5c
 #     }
 # }
+exec sh -c 'blueman-applet & sleep 1 && nm-applet --indicator'
 exec_always sh -c 'pkill waybar; waybar'
 
 include /etc/sway/config.d/*
