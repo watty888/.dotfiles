@@ -1,0 +1,129 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 45,
+  "spacing": 0,
+
+  "modules-left": [
+    "sway/workspaces",
+    "tray",
+    "custom/lock",
+    "custom/reboot",
+    "custom/power",
+    "clock"
+  ],
+
+  "modules-center": [
+    "sway/window"
+  ],
+
+  "modules-right": [
+    "network",
+    "battery",
+    "bluetooth",
+    "pulseaudio",
+    "backlight",
+    "temperature",
+    "memory",
+    "cpu"
+  ],
+
+  "sway/workspaces": {
+    "disable-scroll": false,
+    "all-outputs": true,
+    "format": "{icon}",
+    "persistent-workspaces": {
+      "*": [1, 2, 3, 4, 5, 6, 7]
+    },
+    "format-icons": {
+      "1": "󰣇",
+      "2": "",
+      "3": "",
+      "4": "󰇮",
+      "5": "",
+      "6": "",
+      "7": "",
+      "focused": "󱓻",
+      "urgent": "",
+      "default": ""
+    }
+  },
+
+  "sway/window": {
+    "max-length": 60,
+    "format": "{}"
+  },
+
+  "custom/lock": {
+    "format": "  ",
+    "on-click": "swaylock",
+    "tooltip": true,
+    "tooltip-format": "Lock"
+  },
+
+  "custom/reboot": {
+    "format": "  ",
+    "on-click": "systemctl reboot",
+    "tooltip": true,
+    "tooltip-format": "Reboot"
+  },
+
+  "custom/power": {
+    "format": "  ",
+    "on-click": "systemctl poweroff",
+    "tooltip": true,
+    "tooltip-format": "Power off"
+  },
+
+  "clock": {
+    "format": "   {:%H:%M} ",
+    "tooltip-format": "{:%A, %d %B %Y}"
+  },
+
+  "network": {
+    "format-wifi": " 󰤨  {signalStrength}% ",
+    "format-ethernet": " 󰈀  Connected ",
+    "format-disconnected": " 󰤭  Offline "
+  },
+
+  "battery": {
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": " {icon}  {capacity}% ",
+    "format-icons": ["󰂎", "󰁺", "󰁼", "󰁾", "󰂀", "󰁹"]
+  },
+
+  "bluetooth": {
+    "format": "   {status} ",
+    "format-disabled": "   Off ",
+    "format-connected": "   On "
+  },
+
+  "pulseaudio": {
+    "format": "   {volume}% ",
+    "format-muted": " 󰝟  Muted "
+  },
+
+  "backlight": {
+    "format": "   {percent}% "
+  },
+
+  "temperature": {
+    "critical-threshold": 80,
+    "format": "   {temperatureC}°C "
+  },
+
+  "memory": {
+    "format": "   {}% "
+  },
+
+  "cpu": {
+    "format": "   {usage}% "
+  },
+
+  "tray": {
+    "spacing": 8
+  }
+}
