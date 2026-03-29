@@ -253,7 +253,7 @@ client.urgent           #1e1e2e #f38ba8 #ffffff #f38ba8 #f38ba8
 #         inactive_workspace #32323200 #32323200 #5c5c5c
 #     }
 # }
-exec sh -c 'blueman-applet & sleep 1 && nm-applet --indicator'
+exec sh -c 'blueman-applet && nm-applet --indicator'
 exec_always sh -c 'pkill waybar; waybar'
 
 include /etc/sway/config.d/*
