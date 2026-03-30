@@ -240,22 +240,12 @@ client.focused_inactive #313244 #1e1e2e #a6adc8 #313244 #313244
 client.unfocused        #181825 #1e1e2e #6c7086 #181825 #181825
 client.urgent           #1e1e2e #f38ba8 #ffffff #f38ba8 #f38ba8
 
-# bar {
-#     position top
-#
-#     # When the status_command prints a new line to stdout, swaybar updates.
-#     # The default just shows the current date and time.
-#     status_command while date +'%Y-%m-%d %X'; do sleep 1; done
-#
-#     colors {
-#         statusline #ffffff
-#         background #323232
-#         inactive_workspace #32323200 #32323200 #5c5c5c
-#     }
-# }
-exec sh -c 'blueman-applet && nm-applet --indicator'
+exec blueman-applet
+exec nm-applet --indicator
+
 exec_always sh -c 'pkill waybar; waybar'
 
-include /etc/sway/config.d/*
+exec ~/.config/sway/scripts/wallpaper-slideshow.sh
 
+include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*.conf
