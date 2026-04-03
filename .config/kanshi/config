@@ -1,0 +1,10 @@
+# Kanshi configuration for display profiles
+
+# Profile 1: External monitor only (laptop display disabled)
+profile {
+  output HDMI-A-2 enable mode 3440x1440@59.973
+  output eDP-1 disable
+}
+
+# Profile 2: Laptop only (no profile needed, but explicitly handled for clarity)
+# This is the default when HDMI is disconnected, so no entry needed here
