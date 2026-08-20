@@ -26,6 +26,7 @@ grub
 efibootmgr                 # (was "efibootmux" — that package does not exist)
 dosfstools                 # mkfs.fat, needed for the ESP
 e2fsprogs
+parted                    # partitioning the HDDs in step 07
 ntfs-3g                    # the shared Windows/games partitions
 reflector
 smartmontools             # smartctl — drive health
