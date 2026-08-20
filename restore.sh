@@ -34,6 +34,10 @@ for arg in "$@"; do
   esac
 done
 
+# Package lists carry trailing comments; strip them, or pacman receives the
+# comment text as extra package names and aborts the whole transaction.
+read_pkglist() { sed -e 's/#.*//' -e 's/[[:space:]]\+$//' "$1" | grep -vE '^[[:space:]]*$'; }
+
 log()  { printf '\n\033[1;34m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m warning:\033[0m %s\n' "$*" >&2; }
 die()  { printf '\033[1;31m error:\033[0m %s\n' "$*" >&2; exit 1; }
@@ -69,7 +73,7 @@ sudo pacman -Syu --noconfirm
 PKGFILE="$SCRIPT_DIR/packages-essential.txt"
 [[ -f $PKGFILE ]] || die "packages-essential.txt not found next to this script."
 
-mapfile -t PKGS < <(grep -vE '^\s*(#|$)' "$PKGFILE")
+mapfile -t PKGS < <(read_pkglist "$PKGFILE")
 [[ ${#PKGS[@]} -gt 0 ]] || die "package list is empty."
 
 log "Installing ${#PKGS[@]} packages from the official repos"
@@ -90,7 +94,7 @@ if [[ $SKIP_AUR -eq 0 ]]; then
 
   AURFILE="$SCRIPT_DIR/packages-aur-essential.txt"
   if [[ -f $AURFILE ]]; then
-    mapfile -t AURPKGS < <(grep -vE '^\s*(#|$)' "$AURFILE")
+    mapfile -t AURPKGS < <(read_pkglist "$AURFILE")
     if [[ ${#AURPKGS[@]} -gt 0 ]]; then
       log "Installing ${#AURPKGS[@]} AUR packages"
       paru -S --needed --noconfirm -- "${AURPKGS[@]}"
@@ -120,13 +124,15 @@ if ! dot checkout 2>/dev/null; then
   backup="$HOME/.dotfiles-replaced-$(date +%Y%m%d-%H%M%S)"
   warn "existing files conflict with the repo; moving them to $backup"
   mkdir -p "$backup"
-  dot checkout 2>&1 \
-    | grep -oP '^\s+\K[^\s].*' \
-    | while read -r f; do
-        [[ -e $HOME/$f ]] || continue
-        mkdir -p "$backup/$(dirname "$f")"
-        mv "$HOME/$f" "$backup/$f"
-      done
+  # This checkout is *expected* to fail — we only want its conflict list. Shield
+  # it from set -e/pipefail with `|| true`, or the script dies here instead of
+  # retrying. git indents each conflicting path with a tab.
+  conflicts=$(dot checkout 2>&1 || true)
+  while IFS= read -r f; do
+    [[ -n $f && -e $HOME/$f ]] || continue
+    mkdir -p "$backup/$(dirname "$f")"
+    mv "$HOME/$f" "$backup/$f"
+  done < <(printf '%s\n' "$conflicts" | sed -n $'s/^\t//p')
   dot checkout
 fi
 
