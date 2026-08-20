@@ -28,6 +28,7 @@ dosfstools                 # mkfs.fat, needed for the ESP
 e2fsprogs
 ntfs-3g                    # the shared Windows/games partitions
 reflector
+smartmontools             # smartctl — drive health
 man-db
 less
 
