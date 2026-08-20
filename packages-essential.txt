@@ -1,0 +1,85 @@
+# Base system
+base
+linux-lts
+linux-firmware
+grub
+efibootmux
+grub-btrfs
+
+# Shell & core tools
+zsh
+zoxide
+fzf
+bat
+ripgrep
+fd
+jq
+curl
+wget
+git
+github-cli
+
+# Editor & dev
+neovim
+base-devel
+gcc
+make
+cmake
+nodejs
+npm
+go
+rust
+python
+python-pip
+
+# Wayland/Display
+sway
+wayland
+wlroots
+kanshi
+fuzzel
+xwayland
+libxcb
+xcb-util-keysyms
+
+# Audio
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+alsa-utils
+
+# GPU (NVIDIA - adjust if AMD)
+nvidia-lts
+nvidia-utils
+lib32-nvidia-utils
+
+# Network & system
+networkmanager
+openssh
+wget
+curl
+udisks2
+
+# Fonts & appearance
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+ttf-nerd-fonts-symbols
+gnome-themes-extra
+adwaita-icon-theme
+
+# Useful utils
+htop
+tmux
+screen
+dunst
+brightnessctl
+playerctl
+xdg-user-dirs
+xclip
+xsel
+
+# AUR helper
+paru

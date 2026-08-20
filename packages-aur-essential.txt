@@ -1,0 +1,7 @@
+# AUR packages (minimal)
+brave-bin
+cursor-bin
+proton-ge-custom-bin
+protonup-qt
+bruno
+informant
