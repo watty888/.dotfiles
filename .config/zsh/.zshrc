@@ -52,7 +52,7 @@ alias ohmyzsh="nvim $ZSH"
 alias kitty-conf="nvim $XDG_CONFIG_HOME/kitty/kitty.conf"
 alias v="nvim"
 alias dot='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-alias swayconf="nvim $XDG_CONFIG_HOME/sway/config"
+# alias swayconf="nvim $XDG_CONFIG_HOME/sway/config"
 
 
 # Powerlevel10k customization
@@ -96,3 +96,11 @@ envman() {
 
 # Homebrew (Linuxbrew)
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	command yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}

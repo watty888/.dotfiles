@@ -7,6 +7,6 @@ profile docked {
 }
 
 # Profile 2: Laptop only (activates when only eDP-1 is connected)
-profile {
+profile laptop {
   output eDP-1 enable
 }
