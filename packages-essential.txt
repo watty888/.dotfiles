@@ -1,27 +1,104 @@
-# Base system
-base
-linux-lts
-linux-firmware
-grub
-efibootmux
-grub-btrfs
+# Essential packages for a fresh Arch install on the HP Pavilion Gaming 17-cd0xxx.
+# Consumed by restore.sh. Comments and blank lines are ignored.
+#
+# NOT LISTED ON PURPOSE:
+#   nvidia / nvidia-lts / nvidia-utils
+#     The GTX 1050 Max-Q is Pascal. NVIDIA's 590 branch dropped Maxwell/Pascal/
+#     Volta and Arch's `nvidia` tracks the current branch, so those packages do
+#     not drive this GPU. The working option is nvidia-580xx-dkms from the AUR:
+#         ./restore.sh --with-nvidia
+#     Only needed if the external HDMI port is wired to the dGPU. Test by
+#     plugging a monitor in and running:
+#         for c in /sys/class/drm/card[0-9]; do
+#           echo "$(basename $c) -> $(basename $(readlink -f $c/device/driver))"
+#           for k in $c-*/; do echo "   $(basename $k) $(cat $k/status)"; done
+#         done
+#     If HDMI-A shows "connected" under the i915 card, skip NVIDIA entirely.
 
-# Shell & core tools
+# ── Base ────────────────────────────────────────────────────────────────────
+base
+base-devel
+linux-lts
+linux-lts-headers          # required by any DKMS module
+linux-firmware
+sudo
+grub
+efibootmgr                 # (was "efibootmux" — that package does not exist)
+dosfstools                 # mkfs.fat, needed for the ESP
+e2fsprogs
+ntfs-3g                    # the shared Windows/games partitions
+reflector
+man-db
+less
+
+# ── Graphics: Intel iGPU ────────────────────────────────────────────────────
+mesa
+lib32-mesa
+vulkan-intel
+lib32-vulkan-intel
+intel-media-driver         # VA-API on Coffee Lake
+libva-utils
+
+# ── Wayland / Sway ──────────────────────────────────────────────────────────
+sway
+swaybg
+swayidle
+swaylock
+waybar
+fuzzel
+kanshi
+xorg-xwayland
+wl-clipboard
+grim                       # screenshots (bound in the sway config)
+slurp                      # region select
+wf-recorder                # screen recording (bound in the sway config)
+brightnessctl
+playerctl
+polkit-gnome
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+xdg-user-dirs
+kitty                      # sway's $term — see restore.sh post-flight note
+
+# ── Audio ───────────────────────────────────────────────────────────────────
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+alsa-utils
+pavucontrol
+
+# ── Network / Bluetooth ─────────────────────────────────────────────────────
+networkmanager
+network-manager-applet
+openssh
+bluez
+bluez-utils
+blueman
+
+# ── Shell ───────────────────────────────────────────────────────────────────
 zsh
+zsh-completions
 zoxide
 fzf
 bat
 ripgrep
 fd
 jq
+eza
+tmux
+htop
 curl
 wget
+rsync
+unzip
+7zip
+
+# ── Dev ─────────────────────────────────────────────────────────────────────
 git
 github-cli
-
-# Editor & dev
 neovim
-base-devel
 gcc
 make
 cmake
@@ -31,55 +108,14 @@ go
 rust
 python
 python-pip
+docker
+docker-compose
 
-# Wayland/Display
-sway
-wayland
-wlroots
-kanshi
-fuzzel
-xwayland
-libxcb
-xcb-util-keysyms
-
-# Audio
-pipewire
-pipewire-alsa
-pipewire-jack
-pipewire-pulse
-wireplumber
-alsa-utils
-
-# GPU (NVIDIA - adjust if AMD)
-nvidia-lts
-nvidia-utils
-lib32-nvidia-utils
-
-# Network & system
-networkmanager
-openssh
-wget
-curl
-udisks2
-
-# Fonts & appearance
+# ── Fonts ───────────────────────────────────────────────────────────────────
 noto-fonts
 noto-fonts-cjk
 noto-fonts-emoji
 ttf-nerd-fonts-symbols
-gnome-themes-extra
+ttf-jetbrains-mono-nerd
 adwaita-icon-theme
-
-# Useful utils
-htop
-tmux
-screen
-dunst
-brightnessctl
-playerctl
-xdg-user-dirs
-xclip
-xsel
-
-# AUR helper
-paru
+gnome-themes-extra
