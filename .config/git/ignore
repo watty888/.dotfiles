@@ -1,0 +1,103 @@
+# --- user content ---
+Desktop/
+Documents/
+Downloads/
+Games/
+Music/
+Pictures/
+Projects/
+Public/
+Templates/
+Videos/
+workspace/
+paru/
+
+# --- secrets / credentials ---
+.ssh/
+.gnupg/
+.password-store/
+.pki/
+.pulse-cookie
+
+# --- shell/runtime/history ---
+.zsh_history
+.bash_history
+.lesshst
+.viminfo
+.zcompdump*
+.z
+.fzf/
+.fzf.zsh
+
+# --- repo internals ---
+.dotfiles/
+
+# --- language / package managers ---
+.m2/
+.nuget/
+.nvm/
+.jenv/shims/
+.jenv/versions/
+.cargo/
+.rustup/
+.npm/
+.yarn/
+.bun/
+.dotnet/
+.java/
+
+# --- local installs / generated bins ---
+.local/share/
+.local/state/
+.local/lib/
+.local/opt/
+
+# --- machine-local app state ---
+.cache/
+.mozilla/
+.chromium/
+.steam/
+.anydesk/
+.cursor/
+.docker/
+.var/
+.wine/
+.vscode/
+.claude/
+
+# --- noisy config dirs you likely don't want in dotfiles ---
+.config/borg/
+.config/dconf/
+.config/evolution/
+.config/go/
+.config/github-copilot/
+.config/gtk-3.0/bookmarks
+.config/ibus/
+.config/pulse/
+.config/spotify/
+.config/yelp/
+.config/background
+.config/monitors.xml
+.config/monitors.xml~
+.config/user-share/
+.config/create-next-app-nodejs/
+.config/nextjs-nodejs/
+.config/simple-update-notifier/
+.config/envman/
+.config/goa-1.0/
+.config/systemd/user/pipewire.service.wants/
+.config/systemd/user/pipewire-session-manager.service
+
+# --- logs / dumps / media ---
+*.log
+*.mp4
+*.webm
+*.mkv
+*.mp3
+*.wav
+*.flac
+*.zip
+*.tar
+*.gz
+*.7z
+*.iso

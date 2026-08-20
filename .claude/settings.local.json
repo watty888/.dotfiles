@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go version:*)",
+      "Bash(rustc --version)",
+      "Bash(java -version)",
+      "Read(//usr/lib/**)",
+      "Bash(git --version)",
+      "Bash(gh version:*)",
+      "Bash(docker --version)",
+      "Bash(nvidia-smi)",
+      "Bash(lspci)",
+      "Bash(env)",
+      "Bash(nvidia-smi --query-gpu=utilization.gpu,memory.used,temperature.gpu --format=csv,noheader,nounits)",
+      "Bash(exiftool -ver)",
+      "Bash(pacman -Q exiftool)",
+      "Bash(pacman -Ql perl-image-exiftool)",
+      "Bash(grep -E \"bin/exiftool$\")"
+    ]
+  }
+}

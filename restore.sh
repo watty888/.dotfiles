@@ -3,9 +3,10 @@
 #
 # Run as your normal user (NOT root, NOT with sudo). It escalates per-command.
 #
-#   ./restore.sh                 # essential packages + dotfiles
+#   ./restore.sh                 # essential packages + dotfiles + Claude Code
 #   ./restore.sh --with-nvidia   # also install the legacy Pascal driver (GTX 10xx)
 #   ./restore.sh --skip-aur      # official repo packages only
+#   ./restore.sh --skip-claude   # don't bootstrap Claude Code
 #
 # Machine notes (HP Pavilion Gaming 17-cd0xxx):
 #   GTX 1050 Max-Q is Pascal. NVIDIA's 590 branch dropped Maxwell/Pascal/Volta,
@@ -22,10 +23,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 WITH_NVIDIA=0
 SKIP_AUR=0
+SKIP_CLAUDE=0
 for arg in "$@"; do
   case "$arg" in
     --with-nvidia) WITH_NVIDIA=1 ;;
     --skip-aur)    SKIP_AUR=1 ;;
+    --skip-claude) SKIP_CLAUDE=1 ;;
     -h|--help)     sed -n '2,18p' "$0"; exit 0 ;;
     *) echo "unknown option: $arg" >&2; exit 2 ;;
   esac
@@ -125,6 +128,22 @@ if ! dot checkout 2>/dev/null; then
         mv "$HOME/$f" "$backup/$f"
       done
   dot checkout
+fi
+
+# ── Claude Code ─────────────────────────────────────────────────────────────
+# Native build: a self-contained binary under ~/.local/share/claude/versions
+# symlinked from ~/.local/bin/claude. Not a pacman or npm package, so it is
+# bootstrapped here; after this it self-updates via `claude update`.
+if [[ $SKIP_CLAUDE -eq 0 ]]; then
+  if command -v claude >/dev/null; then
+    log "Claude Code already present ($(claude --version 2>/dev/null | head -1))"
+  else
+    log "Installing Claude Code"
+    curl -fsSL https://claude.ai/install.sh | bash \
+      || warn "Claude Code install failed; retry by hand with the same command"
+  fi
+  # Settings and keybindings come from the dotfiles checkout above.
+  # Credentials do not — run `claude` once and log in.
 fi
 
 # ── Services ────────────────────────────────────────────────────────────────
