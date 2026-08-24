@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a Neovim configuration built on **AstroNvim v5** using **Lazy.nvim** as the plugin manager. It targets TypeScript/JavaScript development with GitHub Copilot, DAP debugging, and VSCode-Neovim compatibility.
+This is a Neovim configuration built on **AstroNvim v6** using **Lazy.nvim** as the plugin manager. It targets TypeScript/JavaScript development with Claude Code integration, DAP debugging, Markdown/Mermaid authoring, and VSCode-Neovim compatibility.
 
 ## Code Style
 
@@ -46,15 +46,23 @@ return {
 
 ### Key Files
 
-| File                        | Purpose                                                                                                        |
-| --------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `lua/plugins/astrocore.lua` | Vim options, key mappings, autocmds, feature toggles                                                           |
-| `lua/plugins/astroui.lua`   | Colorscheme (catppuccin-frappe), icons, highlights                                                             |
-| `lua/plugins/copilot.lua`   | GitHub Copilot panel/suggestion config and keybinds                                                            |
-| `lua/plugins/dap.lua`       | DAP for Node.js/Next.js (port 9230, source maps)                                                               |
-| `lua/plugins/user.lua`      | Custom Snacks.nvim dashboard header                                                                            |
-| `lua/plugins/vscode.lua`    | VSCode-Neovim compatibility mode                                                                               |
-| `lua/community.lua`         | AstroCommunity imports: lua, typescript, prettier, eslint, avante-nvim, catppuccin, trouble-nvim, mini-animate |
+| File                          | Purpose                                                                                                     |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `lua/plugins/astrocore.lua`   | Vim options, key mappings, autocmds, feature toggles                                                        |
+| `lua/plugins/astroui.lua`     | Colorscheme (catppuccin-frappe), icons, highlights                                                          |
+| `lua/plugins/claudecode.lua`  | claudecode.nvim — Claude Code integration (`<leader>ac` / `<leader>af` / `<leader>am`)                       |
+| `lua/plugins/dap.lua`         | DAP for Node.js/Next.js (pwa-node attach, port 9230, source maps)                                           |
+| `lua/plugins/mermaid.lua`     | Inline Mermaid preview via Kitty graphics protocol (`<leader>mp`)                                            |
+| `lua/plugins/user.lua`        | Custom Snacks.nvim dashboard header                                                                         |
+| `lua/plugins/vscode.lua`      | VSCode-Neovim compatibility mode                                                                            |
+| `lua/community.lua`           | AstroCommunity imports: lua, typescript, astro, markdown, prettier, eslint, catppuccin, trouble-nvim, mini-animate, markdown-preview, recipes.vscode |
+
+### External Dependencies
+
+Some plugins need tooling on `PATH` and stay inert without it:
+
+- `dap.lua` — `js-debug-adapter` (installable via Mason)
+- `mermaid.lua` — `mmdc` (`@mermaid-js/mermaid-cli`) and ImageMagick (`magick`), plus Neovim running directly in Kitty (not a nested `:terminal` buffer)
 
 ### Disabled Template Files
 
