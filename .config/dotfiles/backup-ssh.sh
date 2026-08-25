@@ -5,8 +5,18 @@
 #
 # Produces <dest>/ssh-backup-YYYY-MM-DD.tar.gz.gpg, symmetrically encrypted with
 # AES-256 from a passphrase you type. Then decrypts it back and diffs the file
-# list against the original, so a corrupt or mistyped archive is caught now
+# list against the original, so a truncated or corrupted archive is caught now
 # rather than on the day you need it.
+#
+# What that check does NOT prove: gpg caches symmetric passphrases in gpg-agent
+# by default (that is what --no-symkey-cache turns off), so the verify step can
+# decrypt on the cached passphrase without asking again. It confirms the
+# ciphertext is intact -- not that the passphrase you chose is one you will
+# still have months from now. (gpg prompts twice at encryption time, so
+# a simple typo is already ruled out.) To test the passphrase itself, force a
+# real prompt -- the cache lives in gpg-agent, not the shell, so opening a new
+# terminal is not enough:
+#   gpg --no-symkey-cache --decrypt <dest>/ssh-backup-YYYY-MM-DD.tar.gz.gpg >/dev/null
 #
 # The passphrase is the only thing standing between the archive and your private
 # keys. Use something long, and store it somewhere that is NOT this machine --
