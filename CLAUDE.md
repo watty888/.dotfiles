@@ -66,6 +66,9 @@ for Ableton and games. See "Storage layout" below before assuming device paths.
 - **SSH agent**: `SSH_AUTH_SOCK` is exported in `~/.zshenv` and points at the
   socket-activated systemd unit `ssh-agent.socket`. GnuPG's ssh emulation
   (`gpg-agent-ssh.socket`) is masked — do not re-enable both at once.
+- Don't confuse the two SSH roles: the agent above is the **client** side, holding keys
+  for outbound use (GitHub/GitLab/dotfiles). The SSH **server** (`sshd`) is disabled —
+  see "Firewall & remote access".
 
 ### Shell Keyboard Shortcuts
 - `Ctrl+R` → fzf-powered command history search
@@ -84,10 +87,41 @@ rather than assuming a `go/`, `java/`, or similar subdirectory already exists.
 ## Storage layout
 
 - `/` and `/boot` → `/dev/sdb` — Samsung 860 EVO SATA SSD in a Ugreen USB enclosure
-  (UAS, 5 Gb/s). TRIM does not pass through the bridge by default.
+  (ASMedia 174c:235c, UAS, 5 Gb/s). The bridge does not advertise LBPME, so TRIM is
+  off by default; `/etc/udev/rules.d/10-usb-trim.rules` forces `provisioning_mode=unmap`
+  and `fstrim.timer` handles the weekly trim. Don't remove that rule casually.
 - `/dev/nvme0n1` → Windows (Ableton, games). Do not repartition.
 - `/dev/sda` → 1 TB Seagate ST1000LM049 (spinning), unmounted, not in fstab.
 - `/dev/sdc` → 1 TB external, NTFS + ext4, unmounted.
+- **Swap**: none on disk, by design. `zram-generator` provides compressed RAM swap
+  (`/dev/zram0`, `ram / 2` ≈ 7.7 GiB, zstd, priority 100) via
+  `/etc/systemd/zram-generator.conf`, with zram-appropriate tuning in
+  `/etc/sysctl.d/99-zram.conf` (`vm.swappiness=180`, `vm.page-cluster=0`).
+  Do not add a swap file: paging across the USB bridge is slow, and a bus hiccup while
+  swap is live on it can hang the kernel hard. Hibernation is therefore unavailable.
+
+## Boot & dual-boot
+
+- GRUB boots from the USB SSD via the removable-media path
+  (`/boot/EFI/BOOT/BOOTX64.EFI`). There is no dedicated NVRAM entry for it, which is
+  correct for portable media — don't "fix" this.
+- Windows is reachable from the GRUB menu through a **static** entry in
+  `/etc/grub.d/40_custom`, chainloading `\EFI\Microsoft\Boot\bootmgfw.efi` from the
+  Windows ESP (`nvme0n1p1`, FS UUID `6C01-2008`). `os-prober` is deliberately NOT
+  installed; the static entry keeps the menu to one clean Windows item instead of also
+  surfacing the recovery partition. If Windows is reinstalled, re-check that UUID with
+  `lsblk -o NAME,FSTYPE,UUID /dev/nvme0n1` and update the `search` line.
+- After editing anything in `/etc/grub.d/`, regenerate and validate:
+  `sudo grub-mkconfig -o /boot/grub/grub.cfg && grub-script-check /boot/grub/grub.cfg`
+- **Clocks**: Arch keeps the RTC in UTC (`/etc/adjtime`). Windows was configured to
+  match via `RealTimeIsUniversal=1` (DWORD) under
+  `HKLM\SYSTEM\CurrentControlSet\Control\TimeZoneInformation`, which fixed a recurring
+  2-hour offset. Do **not** address clock drift with `timedatectl set-local-rtc 1` —
+  it breaks DST handling. Verify health with `timedatectl`: `RTC time` should equal
+  `Universal time`, not local time.
+- `/boot` is a 1 GB ESP sitting near 70% full, because the nvidia modules in `MODULES=`
+  make the initramfs large (~291 MB, plus a ~372 MB fallback). A second kernel will not
+  fit. Don't strip those modules to make room — they're needed for early KMS.
 
 ## Development Workflows
 
@@ -143,6 +177,30 @@ The NVIDIA GTX 1050 Max-Q is Pascal. NVIDIA's 590 branch dropped Pascal support 
 Arch's `nvidia` package tracks the current branch, so this machine needs
 `nvidia-580xx-dkms` from the AUR. Do not "fix" this by installing plain `nvidia`.
 
+Wi-Fi regulatory: `wireless-regdb` is installed and `/etc/conf.d/wireless-regdom` sets
+`WIRELESS_REGDOM="AT"` (applied at boot by a udev rule). Note the Intel Wireless-AC 9560
+is a *self-managed* regulatory phy — `iw reg get` reports its own `country AT`
+independently of the global domain, so the global setting only really matters for other
+adapters. `/sys/module/cfg80211/parameters/ieee80211_regdom` reading `00` is the
+boot-time module option, not the live domain; that is not a fault.
+
+### Firewall & remote access
+
+- **`ufw` is the firewall**, enabled and active: default deny incoming, allow outgoing,
+  with a single rule allowing tcp/22 from `192.168.0.0/24`. Inspect with
+  `sudo ufw status verbose`. Manage the firewall through ufw, not by editing nftables —
+  the stock `/etc/nftables.conf` is untouched and `nftables.service` stays disabled.
+  Never run both; they fight over the same netfilter engine.
+- **`sshd` is disabled and nothing listens on port 22.** It was only ever used from a
+  work laptop that has since been wiped and returned. To bring it back:
+  `sudo systemctl enable --now sshd` (the ufw rule is already in place). Note this must
+  be done *at the machine* — you cannot enable it remotely. If you do re-enable it, set
+  up key-only auth at that point: `~/.ssh/authorized_keys` does not exist and OpenSSH
+  defaults `PasswordAuthentication` to `yes`.
+- `default deny incoming` also blocks inbound mDNS, so Chromecast discovery in the
+  browser won't work until you add:
+  `sudo ufw allow from 192.168.0.0/24 to any port 5353 proto udp`
+
 ### Environment Variables
 - `EDITOR` → nvim/vim depending on context
 - `XDG_CONFIG_HOME` → `~/.config`
@@ -164,5 +222,15 @@ Arch's `nvidia` package tracks the current branch, so this machine needs
 - Node.js versions are managed per-project via fnm. Don't assume a global version.
 - When working with multiple languages, verify the correct version is active in the shell.
 - The system uses zoxide for directory jumping—typing `z <partial-path>` works well.
-- Version numbers in this file were verified against the live system on 2026-08-25.
+- Version numbers in this file were verified against the live system on 2026-08-26.
   Re-verify rather than trusting them if the date is far in the past.
+- **Deliberate decisions — these are not gaps, don't "fix" them:**
+  - No `tlp` / `power-profiles-daemon` / `thermald`. `intel_pstate` runs in active mode
+    with the `powersave` governor and `balance_performance` EPP, which is already
+    reasonable. If battery life becomes a complaint, `power-profiles-daemon` is the
+    minimal place to start.
+  - `reflector.timer` stays disabled. Its shipped config is `--latest 5 --sort age` with
+    no country filter, which would replace the official CDN mirrors
+    (`fastly`/`geo.mirror.pkgbuild.com`) with five arbitrary ones — likely worse.
+  - `KEYMAP` in `/etc/vconsole.conf` is intentionally unset. Sway uses
+    `xkb_layout "us,de,ru"` with `us` first, so the TTY default already matches.
