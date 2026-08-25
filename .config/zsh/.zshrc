@@ -51,12 +51,14 @@ alias zshupdate="source $XDG_CONFIG_HOME/zsh/.zshrc"
 alias ohmyzsh="nvim $ZSH"
 alias kitty-conf="nvim $XDG_CONFIG_HOME/kitty/kitty.conf"
 alias v="nvim"
-alias dot='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-# alias swayconf="nvim $XDG_CONFIG_HOME/sway/config"
+# Dotfiles live as real files in $HOME, tracked by a bare repo at ~/.dotfiles
+# whose work-tree is $HOME. status.showUntrackedFiles=no is set on that repo,
+# otherwise `dot status` would list every file in your home directory.
+alias dot='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+alias swayconf="nvim $XDG_CONFIG_HOME/sway/config"
 
 
 # Powerlevel10k customization
-[[ ! -f $HOME/.p10k.zsh ]] || source $HOME/.p10k.zsh
 
 # PATH Configuration
 export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
@@ -80,7 +82,10 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-# Jenv (Java version manager) - lazy-loaded on first use
+# Jenv (Java version manager) - lazy-loaded on first use.
+# jenv installs into ~/.jenv/bin, which is not on PATH by default — without
+# this line the lazy-loader below can never find the binary it shells out to.
+[ -d "$HOME/.jenv/bin" ] && export PATH="$HOME/.jenv/bin:$PATH"
 jenv() {
   unfunction jenv
   eval "$(command jenv init -)"
@@ -94,8 +99,11 @@ envman() {
   [ -n "$1" ] && envman "$@"
 }
 
-# Homebrew (Linuxbrew)
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+# Homebrew (Linuxbrew) — not present on every machine, so guard it. Unguarded,
+# a missing brew makes every single shell start with an error.
+if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+fi
 
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
@@ -104,3 +112,9 @@ function y() {
 	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
 	rm -f -- "$tmp"
 }
+
+# bun completions
+[ -s "/home/watty/.bun/_bun" ] && source "/home/watty/.bun/_bun"
+
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

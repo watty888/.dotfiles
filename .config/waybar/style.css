@@ -1,0 +1,191 @@
+/* waybar — Catppuccin Mocha, matching sway, fuzzel and kitty.
+ *
+ * #fbc628 is the gold sway uses for client.focused; it marks the focused
+ * workspace here so the active thing on screen is gold everywhere. */
+
+@define-color base     #1e1e2e;
+@define-color mantle   #181825;
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+@define-color overlay0 #6c7086;
+@define-color subtext0 #a6adc8;
+@define-color text     #cdd6f4;
+@define-color red      #f38ba8;
+@define-color peach    #fab387;
+@define-color yellow   #f9e2af;
+@define-color green    #a6e3a1;
+@define-color teal     #94e2d5;
+@define-color blue     #89b4fa;
+@define-color mauve    #cba6f7;
+@define-color gold     #fbc628;
+
+* {
+  /* Same family and size as kitty and fuzzel. The Nerd Font build is required
+   * — every icon in config.jsonc is a private-use-area glyph. */
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 11pt;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+}
+
+window#waybar {
+  /* Matches kitty's background_opacity 0.95 rather than being fully opaque,
+   * so the bar and the terminal sit on the wallpaper the same way. */
+  background-color: alpha(@base, 0.95);
+  color: @text;
+}
+
+window#waybar.hidden {
+  opacity: 0.2;
+}
+
+/* ── Workspaces ─────────────────────────────────────────────────────────── */
+#workspaces {
+  margin: 4px 4px;
+}
+
+#workspaces button {
+  padding: 0 10px;
+  margin: 0 2px;
+  color: @overlay0;
+  background-color: @surface0;
+  border-radius: 8px;
+  /* Cheap-looking transitions are worse than none; keep it to colour. */
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+#workspaces button:hover {
+  color: @text;
+  background-color: @surface1;
+  /* GTK draws a box-shadow on hover by default — suppress it. */
+  box-shadow: none;
+  text-shadow: none;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+  color: @base;
+  background-color: @gold;
+  font-weight: bold;
+}
+
+#workspaces button.urgent {
+  color: @base;
+  background-color: @red;
+}
+
+/* ── Common module chrome ───────────────────────────────────────────────── */
+#language,
+#mode,
+#window,
+#clock,
+#tray,
+#idle_inhibitor,
+#pulseaudio,
+#backlight,
+#network,
+#cpu,
+#temperature,
+#memory,
+#battery {
+  padding: 0 12px;
+  margin: 4px 2px;
+  border-radius: 8px;
+  background-color: @surface0;
+  color: @text;
+}
+
+#mode {
+  background-color: @red;
+  color: @base;
+  font-weight: bold;
+}
+
+#window {
+  background-color: transparent;
+  color: @subtext0;
+}
+
+/* An empty window module still occupies its margin and leaves a gap; drop it. */
+window#waybar.empty #window {
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+
+#clock {
+  background-color: @surface1;
+  color: @text;
+  font-weight: bold;
+}
+
+#tray {
+  background-color: @surface0;
+}
+
+#tray > .passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
+  background-color: @red;
+}
+
+/* ── Per-module accents ─────────────────────────────────────────────────── */
+/* Layout indicator — mauve so it does not read as a status warning. */
+#language             { color: @mauve; font-weight: bold; }
+
+#idle_inhibitor       { color: @overlay0; }
+#idle_inhibitor.activated { color: @base; background-color: @teal; }
+
+#pulseaudio           { color: @yellow; }
+#pulseaudio.muted     { color: @overlay0; }
+#pulseaudio.bluetooth { color: @blue; }
+
+#backlight            { color: @peach; }
+
+#network              { color: @blue; }
+#network.disconnected { color: @base; background-color: @red; }
+#network.linked       { color: @yellow; }
+
+#cpu                  { color: @green; }
+#memory               { color: @mauve; }
+
+#temperature          { color: @teal; }
+#temperature.critical { color: @base; background-color: @red; }
+
+#battery              { color: @green; }
+#battery.warning      { color: @yellow; }
+#battery.critical     { color: @base; background-color: @red; }
+#battery.charging,
+#battery.plugged      { color: @teal; }
+
+/* Only the genuinely urgent states blink. A blinking battery you cannot fix
+ * right now is noise; a critical one you cannot ignore is the point. */
+@keyframes blink {
+  to { background-color: @red; color: @base; }
+}
+
+#battery.critical:not(.charging) {
+  background-color: @base;
+  color: @red;
+  animation-name: blink;
+  animation-duration: 1s;
+  animation-timing-function: steps(12);
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+tooltip {
+  background-color: @mantle;
+  border: 1px solid @surface1;
+  border-radius: 8px;
+}
+
+tooltip label {
+  color: @text;
+  padding: 4px;
+}

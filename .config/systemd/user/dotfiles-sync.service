@@ -1,0 +1,11 @@
+[Unit]
+Description=Snapshot pacman package lists into the dotfiles repo and push
+Documentation=file:%h/.config/dotfiles/sync-packages.sh
+After=network-online.target
+
+[Service]
+Type=oneshot
+# Reach the same socket-activated agent the interactive shell uses, so a key
+# loaded earlier in the session is available here too.
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+ExecStart=%h/.config/dotfiles/sync-packages.sh

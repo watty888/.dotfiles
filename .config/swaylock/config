@@ -1,0 +1,91 @@
+# swaylock — lock screen theming, Catppuccin Mocha.
+#
+# Read automatically from $XDG_CONFIG_HOME/swaylock/config, so the sway config
+# only needs `swaylock -f`.
+#
+# REQUIRES swaylock-effects (AUR), not upstream swaylock. The effects block
+# below — screenshots, effect-blur, effect-vignette, fade-in, grace, and the
+# bare `indicator` — does not exist in upstream swaylock 1.8.x, where those
+# options make it exit on a usage error *without locking*. That failure is
+# silent: the screen simply never locks, on idle or before sleep.
+#
+# So if swaylock ever gets replaced by the upstream package (a -Syu that pulls
+# in `swaylock` and drops `swaylock-effects` would do it), delete the effects
+# block or the machine stops locking. Check with:
+#     pacman -Qo /usr/bin/swaylock
+
+# Fallback colour, used for any area not covered by the screenshot (and if
+# --screenshots ever fails to grab an output).
+color=1e1e2e
+
+# ── Effects ─────────────────────────────────────────────────────────────────
+# Blurred screenshot of the desktop as the lock background. Note this does put
+# a blurred image of whatever was on screen onto the lock screen; the blur
+# radius below is heavy enough that text is not recoverable by eye.
+screenshots
+effect-blur=7x5
+effect-vignette=0.5:0.5
+fade-in=0.2
+
+# Always draw the indicator ring, not only while typing.
+indicator
+
+# 3s after the lock appears, any keypress dismisses it without a password —
+# covers the "screen locked while I was still here" case. grace-no-mouse means
+# a stray mouse bump cannot do it, only a deliberate keypress.
+grace=3
+grace-no-mouse
+
+# Clock on the lock screen, in the same font as the rest of the desktop.
+clock
+timestr=%H:%M
+datestr=%a %d %b
+
+# ── Indicator ───────────────────────────────────────────────────────────────
+indicator-radius=100
+indicator-thickness=10
+indicator-caps-lock
+
+# idle: dark centre, blue ring (matches the sway/waybar accent family)
+inside-color=1e1e2e
+ring-color=89b4fa
+line-uses-inside
+
+# typing: gold key-press segments — the same #fbc628 sway uses for focus
+key-hl-color=fbc628
+bs-hl-color=f38ba8
+separator-color=00000000
+
+# verifying
+inside-ver-color=1e1e2e
+ring-ver-color=94e2d5
+text-ver-color=94e2d5
+
+# wrong password
+inside-wrong-color=1e1e2e
+ring-wrong-color=f38ba8
+text-wrong-color=f38ba8
+
+# cleared
+inside-clear-color=1e1e2e
+ring-clear-color=f9e2af
+text-clear-color=f9e2af
+
+# caps lock — worth shouting about, it is the usual reason a password "fails"
+inside-caps-lock-color=1e1e2e
+ring-caps-lock-color=fab387
+text-caps-lock-color=fab387
+caps-lock-key-hl-color=fab387
+caps-lock-bs-hl-color=f38ba8
+
+# ── Text ────────────────────────────────────────────────────────────────────
+text-color=cdd6f4
+font=JetBrainsMono Nerd Font
+font-size=20
+
+# Surfaces a failed attempt rather than leaving you guessing whether the
+# keyboard was even registering.
+show-failed-attempts
+
+# A stray keypress should not count as a wrong-password attempt.
+ignore-empty-password

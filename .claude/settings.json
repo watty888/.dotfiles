@@ -2,5 +2,6 @@
   "model": "opus",
   "tui": "fullscreen",
   "editorMode": "vim",
-  "agentPushNotifEnabled": true
+  "agentPushNotifEnabled": true,
+  "theme": "dark"
 }

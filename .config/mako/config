@@ -1,0 +1,58 @@
+# mako — notification daemon for wlroots compositors.
+# Reload after editing with `makoctl reload`; no sway restart needed.
+# Full option list: man 5 mako
+
+# ── Appearance ──────────────────────────────────────────────────────────────
+# Catppuccin Mocha, same palette as waybar/kitty/swaylock and the sway window
+# header colors. Font matches kitty and fuzzel (the Nerd Font build, so glyphs
+# in app-supplied summaries render instead of boxes).
+font=JetBrainsMono Nerd Font 11
+background-color=#1e1e2e
+text-color=#cdd6f4
+border-color=#89b4fa
+border-size=2
+border-radius=8
+padding=12
+margin=12
+
+# ── Placement ───────────────────────────────────────────────────────────────
+# top-right sits under waybar, which is anchored at the top (height 34).
+# layer=overlay so notifications stay visible over fullscreen windows —
+# on the `top` layer a fullscreen video would hide them entirely.
+anchor=top-right
+layer=overlay
+width=380
+height=140
+max-visible=5
+
+# ── Behaviour ───────────────────────────────────────────────────────────────
+default-timeout=5000
+ignore-timeout=0
+icons=1
+max-icon-size=48
+# Collapse repeats from the same app (e.g. a chat client) into one stack
+# instead of filling the screen.
+group-by=app-name
+markup=1
+actions=1
+
+# ── Per-urgency overrides ───────────────────────────────────────────────────
+[urgency=low]
+border-color=#585b70
+default-timeout=3000
+
+[urgency=normal]
+border-color=#89b4fa
+
+# Critical notifications never auto-dismiss — they stay until you act on them.
+# Same red as client.urgent in the sway config.
+[urgency=critical]
+border-color=#f38ba8
+text-color=#f38ba8
+default-timeout=0
+
+# ── Do-not-disturb ──────────────────────────────────────────────────────────
+# Toggled with $mod+Ctrl+n. Notifications still arrive and stay in the history
+# (makoctl restore brings them back), they are just not displayed.
+[mode=do-not-disturb]
+invisible=1

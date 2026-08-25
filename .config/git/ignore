@@ -63,9 +63,28 @@ paru/
 .var/
 .wine/
 .vscode/
-.claude/
+# Claude Code: config is tracked, local state and credentials are not
+.claude/.credentials.json
+.claude/.last-cleanup
+.claude/.last-update-result.json
+.claude/history.jsonl
+.claude/backups/
+.claude/cache/
+.claude/downloads/
+.claude/file-history/
+.claude/paste-cache/
+.claude/projects/
+.claude/session-env/
+.claude/sessions/
+.claude/shell-snapshots/
+.claude/plugins/marketplaces/
+.claude/plugins/repos/
 
 # --- noisy config dirs you likely don't want in dotfiles ---
+# browser profiles: cookies, Login Data, session tokens
+.config/BraveSoftware/
+.config/mozilla/
+.config/chromium/
 .config/borg/
 .config/dconf/
 .config/evolution/
@@ -85,6 +104,9 @@ paru/
 .config/simple-update-notifier/
 .config/envman/
 .config/goa-1.0/
+# systemd generates these from `systemctl --user enable`; the unit files
+# themselves are tracked, the symlinks are not
+.config/systemd/user/*.target.wants/
 .config/systemd/user/pipewire.service.wants/
 .config/systemd/user/pipewire-session-manager.service
 

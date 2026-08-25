@@ -1,0 +1,158 @@
+// waybar — status bar for the sway session.
+//
+// Launched by .config/sway/config: exec_always sh -c 'pkill waybar; waybar'
+// Palette is Catppuccin Mocha (see style.css), matching sway, fuzzel and kitty.
+//
+// Hardware here is an HP Pavilion Gaming 17-cd0xxx: battery BAT1, AC adapter
+// ACAD, intel_backlight, wifi wlo1. Those names are baked in below where the
+// module cannot discover them on its own.
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 4,
+
+  // Both outputs get a bar. kanshi drives which ones are live (docked = the
+  // Dell on DP-3 only, laptop = eDP-1 only), and waybar follows whatever
+  // exists, so listing both here is what keeps the bar present in either
+  // profile rather than only on the laptop panel.
+  "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "sway/language",
+    "tray",
+    "idle_inhibitor",
+    "pulseaudio",
+    "backlight",
+    "network",
+    "cpu",
+    "temperature",
+    "memory",
+    "battery"
+  ],
+
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": false,
+    "format": "{name}"
+  },
+
+  "sway/language": {
+    // The layout list is xkb_layout "us,de,ru" in .config/sway/config.
+    // Without this there is no way to see which layout is active, which makes
+    // a half-working layout switch indistinguishable from a broken one.
+    "format": "\u2328 {short}",
+    "tooltip-format": "{long}",
+    "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
+  },
+
+  "sway/mode": {
+    "format": "<span style=\"italic\">{}</span>"
+  },
+
+  "sway/window": {
+    "max-length": 60,
+    "tooltip": false
+  },
+
+  "idle_inhibitor": {
+    // Mirrors the swayidle setup in the sway config — a visible toggle for
+    // "don't blank the screen while I'm reading something".
+    "format": "{icon}",
+    "format-icons": { "activated": "󰅶", "deactivated": "󰛊" },
+    "tooltip-format-activated": "Idle inhibited — screen stays on",
+    "tooltip-format-deactivated": "Idle normal — swayidle will lock"
+  },
+
+  "tray": {
+    // nm-applet and blueman-applet are exec'd by the sway config and live here.
+    "icon-size": 16,
+    "spacing": 8
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 muted",
+    "format-bluetooth": "󰂰 {volume}%",
+    "format-bluetooth-muted": "󰂲 muted",
+    "format-icons": { "headphone": "󰋋", "default": ["󰕿", "󰖀", "󰕾"] },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "tooltip-format": "{desc} — {volume}%"
+  },
+
+  "backlight": {
+    "device": "intel_backlight",
+    "format": "{icon} {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "on-scroll-up": "brightnessctl set 2%+",
+    "on-scroll-down": "brightnessctl set 2%-"
+  },
+
+  "network": {
+    // No "interface" key on purpose: this box has wifi (wlo1), onboard
+    // ethernet (eno1) and a USB ethernet adapter, so let waybar follow
+    // whichever currently holds the default route.
+    "format-wifi": "󰖩 {essid}",
+    "format-ethernet": "󰈀 {ipaddr}",
+    "format-linked": "󰈀 no IP",
+    "format-disconnected": "󰖪 offline",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}\n↓{bandwidthDownBits} ↑{bandwidthUpBits}",
+    "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}",
+    "on-click": "nm-connection-editor"
+  },
+
+  "cpu": {
+    "format": "󰻠 {usage}%",
+    "interval": 3,
+    "tooltip": false
+  },
+
+  "temperature": {
+    // Absolute device path, not /sys/class/hwmon/hwmonN — the hwmon numbers
+    // are assigned in probe order and move between boots, which would silently
+    // point this module at the battery or the wifi card instead of the CPU.
+    // temp1_input here is "Package id 0".
+    "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
+    "input-filename": "temp1_input",
+    "critical-threshold": 85,
+    "format": "{icon} {temperatureC}°C",
+    "format-critical": "󰸁 {temperatureC}°C",
+    "format-icons": ["󰜗", "󰔏", "󰸁"],
+    "interval": 5
+  },
+
+  "memory": {
+    "format": "󰍛 {percentage}%",
+    "tooltip-format": "{used:0.1f}G / {total:0.1f}G",
+    "interval": 5
+  },
+
+  "battery": {
+    "bat": "BAT1",
+    "adapter": "ACAD",
+    "states": { "warning": 30, "critical": 15 },
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-plugged": "󰚥 {capacity}%",
+    "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"],
+    "tooltip-format": "{timeTo} ({power:0.1f}W)"
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "format-alt": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#cdd6f4'><b>{}</b></span>",
+        "days": "<span color='#a6adc8'>{}</span>",
+        "weekdays": "<span color='#89b4fa'><b>{}</b></span>",
+        "today": "<span color='#fbc628'><b>{}</b></span>"
+      }
+    },
+    "actions": { "on-click-right": "mode" }
+  }
+}

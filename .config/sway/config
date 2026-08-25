@@ -8,22 +8,30 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term /home/watty/.local/bin/kitty
+set $term kitty zsh
 # Your preferred application launcher
 set $menu fuzzel
-# Lock command with styling
-set $lock swaylock -f -c 000000 \
-    --screenshots \
-    --effect-blur 7x5 \
-    --effect-vignette 0.5:0.5 \
-    --fade-in 0.2 \
-    --indicator \
-    --grace 3 \
+# Lock command. Theming lives in .config/swaylock/config, which swaylock reads
+# on its own — keeping it out of here means the flags cannot drift out of sync
+# with what this swaylock build actually accepts.
+#
+# It previously passed --screenshots/--effect-blur/--effect-vignette/--fade-in/
+# --grace and a bare --indicator. None of those exist in upstream swaylock
+# (they are swaylock-effects options), so swaylock exited on a usage error and
+# the screen never locked at all — not on idle, not before sleep.
+set $lock swaylock -f
 
 ### Output configuration
 #
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /home/watty/Pictures/Wallpapers/5356237.jpg fill
+# Background: the wallpaper slideshow below takes over a moment after startup
+# and rotates through ~/Pictures/Wallpapers. This solid Catppuccin Mocha base
+# (matching waybar/kitty/swaylock) is what shows until it does, and what you
+# fall back to if that directory is ever empty.
+#
+# Deliberately not an `output * bg /path/to/image.jpg fill` line: hardcoding a
+# filename here is what broke the last setup, when the named image was gone and
+# the config pointed at nothing. The script picks whatever is actually there.
+output * bg #1e1e2e solid_color
 #
 # Example configuration:
 #
@@ -35,10 +43,20 @@ output * bg /home/watty/Pictures/Wallpapers/5356237.jpg fill
 #
 # Example configuration:
 #
+# Plain `exec`, not exec_always: swayidle must be a single instance, and
+# wrapping it in `sh -c 'pkill ...; exec swayidle ...'` to make it reload-safe
+# breaks — sway substitutes $lock and then sh re-parses the nested quoting,
+# and swayidle ends up never starting. Changes here need a sway restart (or
+# `pkill swayidle` and rerun by hand), which is the tradeoff for it being
+# reliably one process.
+#
+# `lock` handles loginctl lock-session, so a lock requested by systemd
+# actually locks instead of being silently ignored.
 exec swayidle -w \
          timeout 300 '$lock' \
          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-         before-sleep '$lock'
+         before-sleep '$lock' \
+         lock '$lock'
 #
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -50,7 +68,13 @@ exec swayidle -w \
 #
 input type:keyboard {
     xkb_layout "us,de,ru"
-    xkb_options "grp:alt_shift_toggle,caps:ctrl_modifier"
+    # grp:alt_shift_toggle deliberately NOT set here. sway/wlroots applies xkb
+    # group toggles per input device, so Alt+Shift switched only the keyboard
+    # it was pressed on and left the other 16 devices (Glorious, EVO75, the
+    # dock, the internal AT keyboard) on the previous layout. The bindsym near
+    # the bottom of this file does the same job across `type:keyboard`, i.e.
+    # every device at once. Setting both would double-switch and skip a layout.
+    xkb_options "caps:ctrl_modifier"
     repeat_delay 250
     repeat_rate 50
 }
@@ -224,6 +248,11 @@ bindsym $mod+r mode "resize"
     # Lock the screen using swaylock
     bindsym $mod+Ctrl+l exec $lock
 
+    # Notifications (mako)
+    bindsym $mod+n exec makoctl dismiss
+    bindsym $mod+Shift+n exec makoctl dismiss --all
+    bindsym $mod+Ctrl+n exec makoctl mode -t do-not-disturb
+
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
@@ -234,12 +263,52 @@ client.focused_inactive #313244 #1e1e2e #a6adc8 #313244 #313244
 client.unfocused        #181825 #1e1e2e #6c7086 #181825 #181825
 client.urgent           #1e1e2e #f38ba8 #ffffff #f38ba8 #f38ba8
 
+# mako — notification daemon (org.freedesktop.Notifications on DBus).
+# Plain `exec`, not exec_always: only one process can own that DBus name, so a
+# second instance started on reload would just exit with an error. Config
+# changes in .config/mako/config apply with `makoctl reload`, no restart.
+exec mako
+
 exec blueman-applet
 exec nm-applet --indicator
 
 exec_always sh -c 'pkill waybar; waybar'
 
-exec ~/.config/sway/scripts/wallpaper-slideshow.sh
+# kanshi — applies the display profiles in .config/kanshi/config.
+# exec_always (not exec) so a sway reload re-applies them, and pkill first
+# because a second kanshi would fight the first over every output change.
+exec_always sh -c 'pkill kanshi; kanshi'
+
+# ── Keyboard layout switching ───────────────────────────────────────────────
+# WHY ALT+SHIFT AND NOT $mod+space: an earlier attempt used the xkb option
+# grp:win_space_toggle, which collided with sway's own default binding
+# `bindsym $mod+space focus mode_toggle` (see /etc/sway/config). xkb options
+# bypass sway's binding table, so sway never knew the key was taken and BOTH
+# fired on every press — layout switched *and* focus jumped between tiled and
+# floating. No error, no precedence, just two actions.
+#
+# That no longer applies: switching is a sway bindsym now, so sway arbitrates.
+# Binding $mod+space here would simply replace focus mode_toggle instead of
+# double-firing — worth remembering if the Alt+Shift chord issue below bites.
+#
+# THE COST OF ALT+SHIFT: this matches on a modifier pair, so any Alt+Shift+key
+# chord switches layout on the way to its real binding. Alt+Shift+Tab is the
+# one you will notice.
+#
+# Alt+Shift, switching every keyboard at once (see the input block above).
+# Both orders are bound because the binding matches on whichever of the two
+# lands second: Alt-then-Shift emits Shift_L with Mod1 held, Shift-then-Alt
+# emits Alt_L with Shift held.
+# --no-repeat stops key autorepeat from cycling layouts while held.
+bindsym --no-repeat Mod1+Shift_L input type:keyboard xkb_switch_layout next
+bindsym --no-repeat Shift+Alt_L  input type:keyboard xkb_switch_layout next
+
+# Wallpaper slideshow: cycles ~/Pictures/Wallpapers every 10 minutes. Tune it
+# with WALLPAPER_DIR / WALLPAPER_INTERVAL / WALLPAPER_MODE, e.g.
+#     exec_always env WALLPAPER_INTERVAL=300 ~/.config/sway/scripts/wallpaper-slideshow.sh
+# exec_always, not exec, so `swaymsg reload` picks up script edits; the script
+# kills its own previous instance so reloads do not stack up timers.
+exec_always ~/.config/sway/scripts/wallpaper-slideshow.sh
 
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*.conf
