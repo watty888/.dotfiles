@@ -49,12 +49,30 @@ return {
 | File                          | Purpose                                                                                                     |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | `lua/plugins/astrocore.lua`   | Vim options, key mappings, autocmds, feature toggles                                                        |
-| `lua/plugins/astroui.lua`     | Colorscheme (catppuccin-mocha, transparent bg), icons, highlights                                                          |
+| `lua/plugins/astroui.lua`     | Colorscheme (persisted, default catppuccin-mocha, transparent bg), icons, highlights; `<Leader>ft` picker persistence      |
+| `lua/theme.lua`               | Reads/writes the picked colorscheme to `$XDG_STATE_HOME/nvim/colorscheme`                                                 |
 | `lua/plugins/claudecode.lua`  | claudecode.nvim — Claude Code integration (`<leader>ac` / `<leader>af` / `<leader>am`)                       |
 | `lua/plugins/dap.lua`         | DAP for Node.js/Next.js (pwa-node attach, port 9230, source maps)                                           |
 | `lua/plugins/mermaid.lua`     | Inline Mermaid preview via Kitty graphics protocol (`<leader>mp`)                                            |
 | `lua/plugins/user.lua`        | Custom Snacks.nvim dashboard header                                                                         |
-| `lua/community.lua`           | AstroCommunity imports: lua, typescript, astro, markdown, prettier, eslint, catppuccin, trouble-nvim, mini-animate, markdown-preview |
+| `lua/community.lua`           | AstroCommunity imports: lua, typescript, astro, markdown, prettier, eslint, trouble-nvim, mini-animate, markdown-preview, and the colorscheme packs (catppuccin, tokyonight, kanagawa, rose-pine, gruvbox) |
+
+### Colorscheme Switching
+
+`<Leader>ft` opens the Snacks colorscheme picker (live preview as you move through the list;
+it also lists themes from lazy plugins that haven't loaded yet). AstroNvim's default confirm
+only applies the theme to the running session, so `lua/plugins/astroui.lua` overrides
+`picker.sources.colorschemes.confirm` to additionally call `require("theme").save()`.
+`astroui.opts.colorscheme` reads that value back on the next start via `require("theme").load()`,
+falling back to `catppuccin-mocha`.
+
+Delete `$XDG_STATE_HOME/nvim/colorscheme` (`~/.local/state/nvim/colorscheme`) to return to the default.
+
+Installed theme families: catppuccin, tokyonight, kanagawa, rose-pine, gruvbox, astrotheme. Add
+more by importing another `astrocommunity.colorscheme.*` module in `lua/community.lua`. Each
+family spells transparency with a different option key, so a new one also needs a transparency
+override in `lua/plugins/astroui.lua` to match the terminal — otherwise it will render with an
+opaque background while the others stay transparent.
 
 ### External Dependencies
 
