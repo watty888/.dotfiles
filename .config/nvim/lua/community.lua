@@ -15,5 +15,4 @@ return {
   { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.diagnostics.trouble-nvim" },
   { import = "astrocommunity.scrolling.mini-animate" },
-  { import = "astrocommunity.recipes.vscode" },
 }

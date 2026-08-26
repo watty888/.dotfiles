@@ -24,7 +24,7 @@ return {
           port = 9230, -- Default Node.js debug port
           restart = true,
           sourceMaps = true,
-          localRoor = vim.fn.getcwd(),
+          localRoot = vim.fn.getcwd(),
           remoteRoot = vim.fn.getcwd(),
           skipFiles = { "<node_internals>/**", "node_modules/**" },
           protocol = "inspector",

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a Neovim configuration built on **AstroNvim v6** using **Lazy.nvim** as the plugin manager. It targets TypeScript/JavaScript development with Claude Code integration, DAP debugging, Markdown/Mermaid authoring, and VSCode-Neovim compatibility.
+This is a Neovim configuration built on **AstroNvim v6** using **Lazy.nvim** as the plugin manager. It targets TypeScript/JavaScript development with Claude Code integration, DAP debugging, and Markdown/Mermaid authoring.
 
 ## Code Style
 
@@ -49,13 +49,12 @@ return {
 | File                          | Purpose                                                                                                     |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | `lua/plugins/astrocore.lua`   | Vim options, key mappings, autocmds, feature toggles                                                        |
-| `lua/plugins/astroui.lua`     | Colorscheme (catppuccin-frappe), icons, highlights                                                          |
+| `lua/plugins/astroui.lua`     | Colorscheme (catppuccin-mocha, transparent bg), icons, highlights                                                          |
 | `lua/plugins/claudecode.lua`  | claudecode.nvim — Claude Code integration (`<leader>ac` / `<leader>af` / `<leader>am`)                       |
 | `lua/plugins/dap.lua`         | DAP for Node.js/Next.js (pwa-node attach, port 9230, source maps)                                           |
 | `lua/plugins/mermaid.lua`     | Inline Mermaid preview via Kitty graphics protocol (`<leader>mp`)                                            |
 | `lua/plugins/user.lua`        | Custom Snacks.nvim dashboard header                                                                         |
-| `lua/plugins/vscode.lua`      | VSCode-Neovim compatibility mode                                                                            |
-| `lua/community.lua`           | AstroCommunity imports: lua, typescript, astro, markdown, prettier, eslint, catppuccin, trouble-nvim, mini-animate, markdown-preview, recipes.vscode |
+| `lua/community.lua`           | AstroCommunity imports: lua, typescript, astro, markdown, prettier, eslint, catppuccin, trouble-nvim, mini-animate, markdown-preview |
 
 ### External Dependencies
 

@@ -14,9 +14,12 @@
 ---@type LazySpec
 return {
   {
-    "nvim-treesitter/nvim-treesitter",
+    -- NOTE: AstroNvim v6 tracks nvim-treesitter's `main` branch, whose `setup()`
+    -- only reads `install_dir` -- parsers must be requested through AstroCore.
+    "AstroNvim/astrocore",
+    ---@type AstroCoreOpts
     opts = {
-      ensure_installed = { "markdown", "markdown_inline" },
+      treesitter = { ensure_installed = { "markdown", "markdown_inline" } },
     },
   },
   {
