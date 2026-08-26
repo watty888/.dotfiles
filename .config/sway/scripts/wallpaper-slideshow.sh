@@ -14,7 +14,7 @@
 set -eu
 
 DIR="${WALLPAPER_DIR:-$HOME/Pictures/Wallpapers}"
-INTERVAL="${WALLPAPER_INTERVAL:-1900}"   # seconds; 10 minutes
+INTERVAL="${WALLPAPER_INTERVAL:-86400}"   # seconds; 24 hours
 MODE="${WALLPAPER_MODE:-fill}"          # swaybg scaling mode
 
 PIDFILE="${XDG_RUNTIME_DIR:-/tmp}/wallpaper-slideshow.pid"
