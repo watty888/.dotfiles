@@ -19,7 +19,7 @@ set $menu fuzzel
 # --grace and a bare --indicator. None of those exist in upstream swaylock
 # (they are swaylock-effects options), so swaylock exited on a usage error and
 # the screen never locked at all — not on idle, not before sleep.
-set $lock swaylock -f
+set $lock ~/.config/sway/scripts/lock.sh
 
 ### Output configuration
 #
@@ -300,8 +300,18 @@ exec_always sh -c 'pkill kanshi; kanshi'
 # lands second: Alt-then-Shift emits Shift_L with Mod1 held, Shift-then-Alt
 # emits Alt_L with Shift held.
 # --no-repeat stops key autorepeat from cycling layouts while held.
-bindsym --no-repeat Mod1+Shift_L input type:keyboard xkb_switch_layout next
-bindsym --no-repeat Shift+Alt_L  input type:keyboard xkb_switch_layout next
+#
+# --locked keeps the chord working while swaylock is up. Without it sway drops
+# the binding for the duration of the lock, so a lock screen was stuck in
+# whatever layout it started in — the reason the ru layout used to make the
+# session untypeable. scripts/lock.sh now starts every lock in us; this is what
+# lets you get to de/ru from there if the password needs it.
+#
+# Note there is no on-screen layout indicator while locked (swaylock has none),
+# so switching is blind. Knowing it always starts at us is what makes it
+# countable: one Alt+Shift for de, two for ru.
+bindsym --no-repeat --locked Mod1+Shift_L input type:keyboard xkb_switch_layout next
+bindsym --no-repeat --locked Shift+Alt_L  input type:keyboard xkb_switch_layout next
 
 # Wallpaper slideshow: cycles ~/Pictures/Wallpapers every 10 minutes. Tune it
 # with WALLPAPER_DIR / WALLPAPER_INTERVAL / WALLPAPER_MODE, e.g.
