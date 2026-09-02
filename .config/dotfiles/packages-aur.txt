@@ -2,5 +2,4 @@ brave-bin
 nvidia-580xx-dkms
 nvidia-580xx-utils
 paru
-paru-bin-debug
 swaylock-effects

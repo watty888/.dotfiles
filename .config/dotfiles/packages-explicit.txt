@@ -31,6 +31,7 @@ grim
 grub
 gvfs
 htop
+informant
 intel-media-driver
 intel-ucode
 jdk-openjdk
@@ -46,6 +47,7 @@ linux-lts
 linux-lts-headers
 mako
 man-db
+man-pages
 mesa-utils
 mpv
 neovim
@@ -59,10 +61,10 @@ npm
 ntfs-3g
 nvidia-580xx-dkms
 openssh
+pacman-contrib
 papirus-icon-theme
 parted
 paru
-paru-bin-debug
 pavucontrol
 pipewire
 pipewire-alsa
@@ -74,6 +76,7 @@ python-pip
 reflector
 ripgrep
 rsync
+rtkit
 rust
 slurp
 smartmontools
@@ -90,6 +93,7 @@ tmux
 ttf-jetbrains-mono-nerd
 ttf-nerd-fonts-symbols
 tumbler
+ufw
 unzip
 vim
 vulkan-intel
@@ -97,6 +101,7 @@ vulkan-tools
 waybar
 wf-recorder
 wget
+wireless-regdb
 wireplumber
 wl-clipboard
 xdg-desktop-portal
@@ -105,5 +110,6 @@ xdg-user-dirs
 xorg-xwayland
 yazi
 zoxide
+zram-generator
 zsh
 zsh-completions
