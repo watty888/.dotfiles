@@ -42,6 +42,7 @@ lazygit
 less
 lib32-mesa
 lib32-vulkan-intel
+libreoffice-still
 libva-utils
 linux-firmware
 linux-lts
@@ -92,7 +93,10 @@ telegram-desktop
 thunar
 thunar-archive-plugin
 tmux
+ttf-caladea
+ttf-carlito
 ttf-jetbrains-mono-nerd
+ttf-liberation
 ttf-nerd-fonts-symbols
 tumbler
 ufw
