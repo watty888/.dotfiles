@@ -1,0 +1,16 @@
+[Unit]
+Description=Studio Scout Telegram bot (pnpm dev, tsx watch)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Projects/location-search
+Environment=FNM_DIR=%h/.local/share/fnm
+# fnm resolves Node 24 (matches .node-version); corepack's pnpm shim lives in that Node's bin dir.
+ExecStart=%h/.local/share/fnm/fnm exec --using=24 -- pnpm dev
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target
