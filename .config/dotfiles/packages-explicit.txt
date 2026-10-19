@@ -56,6 +56,7 @@ mpv
 neovim
 networkmanager
 network-manager-applet
+ngrok
 nodejs
 noto-fonts
 noto-fonts-cjk
