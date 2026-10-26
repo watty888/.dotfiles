@@ -1,6 +1,7 @@
 7zip
 adwaita-icon-theme
 alsa-utils
+anydesk-bin
 base
 base-devel
 bat
