@@ -329,5 +329,19 @@ exec_always ~/.config/sway/scripts/wallpaper-slideshow.sh
 for_window [app_id="^pinentry"] floating enable, move position center, focus
 for_window [class="^Pinentry"] floating enable, move position center, focus
 
+# Settings windows opened from waybar (module on-click or the tray applets)
+# float centred instead of tiling over whatever was open. GTK3 on Wayland uses
+# the binary name as app_id, so blueman's windows are "blueman-manager",
+# "blueman-adapters", "blueman-services", "blueman-sendto", and its pairing /
+# PIN dialogs come from "blueman-applet"; nm-applet's Wi-Fi password prompt is
+# "nm-applet". pavucontrol is "org.pulseaudio.pavucontrol" from 6.0 on, plain
+# "pavucontrol" before. The big windows get a fixed size because pavucontrol
+# floats far too small by default; dialogs keep their natural size and take
+# focus so a password prompt is not missed.
+for_window [app_id="^(org\.pulseaudio\.)?pavucontrol$"] floating enable, resize set 960 640, move position center
+for_window [app_id="^nm-connection-editor$"] floating enable, move position center
+for_window [app_id="^blueman-(manager|adapters|services|sendto)$"] floating enable, resize set 800 560, move position center
+for_window [app_id="^(blueman-applet|nm-applet)$"] floating enable, move position center, focus
+
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*.conf
