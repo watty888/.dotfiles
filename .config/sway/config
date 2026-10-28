@@ -320,11 +320,14 @@ bindsym --no-repeat --locked Shift+Alt_L  input type:keyboard xkb_switch_layout 
 # kills its own previous instance so reloads do not stack up timers.
 exec_always ~/.config/sway/scripts/wallpaper-slideshow.sh
 
-# gpg passphrase prompts (pinentry-gtk, app_id "pinentry-gtk") float centred
-# with focus. Tiled, a prompt started from a background command (pass in a
-# script, Claude Code) opened as one more tile beside kitty and the browser,
-# went unnoticed, and timed out after 60 s. "^pinentry" covers -qt as well.
+# gpg passphrase prompts (pinentry-gtk) float centred with focus. Tiled, a
+# prompt started from a background command (pass in a script, Claude Code)
+# opened as one more tile beside kitty and the browser, went unnoticed, and
+# timed out after 60 s. Started by gpg-agent, pinentry runs under Xwayland
+# (class "Pinentry-gtk", no app_id); run by hand on Wayland it has app_id
+# "pinentry-gtk". Both rules are needed. "^pinentry" covers -qt as well.
 for_window [app_id="^pinentry"] floating enable, move position center, focus
+for_window [class="^Pinentry"] floating enable, move position center, focus
 
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*.conf
