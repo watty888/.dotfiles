@@ -1,7 +1,11 @@
 anydesk-bin
+appimagelauncher
+argagg
 brave-bin
 ngrok
 nvidia-580xx-dkms
 nvidia-580xx-utils
 paru
+python-lockfile
 swaylock-effects
+todoist-appimage

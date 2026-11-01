@@ -25,6 +25,7 @@ fuzzel
 fzf
 git
 github-cli
+glab
 gnome-themes-extra
 go
 greetd
@@ -32,6 +33,7 @@ greetd-tuigreet
 grim
 grub
 gvfs
+himalaya
 htop
 informant
 intel-media-driver
@@ -78,7 +80,9 @@ pipewire-jack
 pipewire-pulse
 playerctl
 polkit-gnome
+protonmail-bridge
 python-pip
+rclone
 reflector
 ripgrep
 rsync
@@ -95,7 +99,9 @@ swaylock-effects
 telegram-desktop
 thunar
 thunar-archive-plugin
+timew
 tmux
+todoist-appimage
 ttf-caladea
 ttf-carlito
 ttf-jetbrains-mono-nerd
@@ -108,6 +114,7 @@ vim
 vulkan-intel
 vulkan-tools
 waybar
+webkitgtk-6.0
 wf-recorder
 wget
 wireless-regdb
