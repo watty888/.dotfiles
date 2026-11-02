@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a Neovim configuration built on **AstroNvim v6** using **Lazy.nvim** as the plugin manager. It targets TypeScript/JavaScript development with Claude Code integration, DAP debugging, and Markdown/Mermaid authoring.
+This is a Neovim configuration built on **AstroNvim v6** using **Lazy.nvim** as the plugin manager. It targets TypeScript/JavaScript development with DAP debugging and Markdown/Mermaid authoring.
 
 ## Code Style
 
@@ -51,7 +51,6 @@ return {
 | `lua/plugins/astrocore.lua`   | Vim options, key mappings, autocmds, feature toggles                                                        |
 | `lua/plugins/astroui.lua`     | Colorscheme (persisted, default catppuccin-mocha, transparent bg), icons, highlights; `<Leader>ft` picker persistence      |
 | `lua/theme.lua`               | Reads/writes the picked colorscheme to `$XDG_STATE_HOME/nvim/colorscheme`                                                 |
-| `lua/plugins/claudecode.lua`  | claudecode.nvim — Claude Code integration (`<leader>ac` / `<leader>af` / `<leader>am`)                       |
 | `lua/plugins/dap.lua`         | DAP for Node.js/Next.js (pwa-node attach, port 9230, source maps)                                           |
 | `lua/plugins/mermaid.lua`     | Inline Mermaid preview via Kitty graphics protocol (`<leader>mp`)                                            |
 | `lua/plugins/user.lua`        | Custom Snacks.nvim dashboard header                                                                         |
