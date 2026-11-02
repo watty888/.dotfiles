@@ -14,38 +14,5 @@
   "editorMode": "vim",
   "switchModelsOnFlag": true,
   "agentPushNotifEnabled": true,
-  "autoMode": {
-    "soft_deny": [
-      "$defaults",
-      "Bash(pass insert:*) in this repo — writes to the secrets store rather than reads should stay a confirm step despite pass's routine read usage",
-      "Edits to files under deploy/ that don't correspond to an actual miyon.ai app change — CLAUDE.md flags a stale mirror as worse than no mirror"
-    ],
-    "environment": [
-      "### Org-wide",
-      "**Organization**: miyon.ai voicebot setup projects (partner-company work, this repo: gitlab.com:elcinb/voxwerk.git)",
-      "**Cloud provider(s)**: None configured",
-      "**Repository visibility**: unverified — origin is gitlab.com, not github.com, so gh could not confirm visibility here; treat as possibly public per shipped-default guidance (scope commits/pushes to this repo's own work)",
-      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
-      "**Secrets management**: pass, under voicebots/<client>/<name> (per CLAUDE.md) — never paste credentials into a Claude Code session; redact customer data in transcripts before committing",
-      "**Default / protected branches**: main (default branch; protection status not queryable — origin is not github.com)",
-      "**CI/CD deploy targets**: None configured — deploys in this project are manual paste into the miyon.ai web app, not machine-executed",
-      "**Network posture**: None configured",
-      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine with open internet",
-      "**Source control**: this repo (gitlab.com:elcinb/voxwerk.git) and its origin remote only",
-      "**Trusted internal domains**: None configured",
-      "**Trusted cloud buckets**: None configured",
-      "**Key internal services**: miyon.ai web app (agent configuration and scenario testing — manual/browser-only, no API/CLI/config import exists for it, per CLAUDE.md)",
-      "**Internal package registry**: None configured",
-      "**Sensitive data locations & audiences**: docs/secrets.md (secrets policy doc); client API keys (must live only in pass under voicebots/<client>/<name>, never in-repo); customer/call data in transcripts (redact before committing); files matching .env, .env.*, *.key, credentials.json, secrets.txt/json/yaml/yml, *.secret",
-      "**Data retention / declassification**: None configured",
-      "**Sensitive remote targets**: any namespace, host, or container whose name carries prod or production as a whole word or name segment",
-      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
-      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries prod or production as a whole word or name segment",
-      "### User-specific",
-      "**Primary use of Claude Code**: voicebot client-project setup (system prompts, integrations, QA scenarios) for miyon.ai — routine under projects/<client>/ prefix in this repo",
-      "**Trusted repo**: this repo (gitlab.com:elcinb/voxwerk.git), working directory /home/watty/Projects/voicebots",
-      "**Org-specific CLIs**: pass (secrets retrieval); scripts/check-prompt.sh (prompt format validation, also run by a PostToolUse hook)"
-    ]
-  },
   "voiceEnabled": true
 }
