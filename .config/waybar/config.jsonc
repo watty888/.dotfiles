@@ -19,22 +19,22 @@
   "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
   "modules-center": ["clock"],
   "modules-right": [
-    "sway/language",
-    "tray",
     "idle_inhibitor",
-    "pulseaudio",
     "backlight",
-    "network",
     "cpu",
     "temperature",
     "memory",
-    "battery"
+    "pulseaudio",
+    "network",
+    "sway/language",
+    "battery",
+    "tray",
   ],
 
   "sway/workspaces": {
     "disable-scroll": true,
     "all-outputs": false,
-    "format": "{name}"
+    "format": "{name}",
   },
 
   "sway/language": {
@@ -43,16 +43,16 @@
     // a half-working layout switch indistinguishable from a broken one.
     "format": "\u2328 {short}",
     "tooltip-format": "{long}",
-    "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
+    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
   },
 
   "sway/mode": {
-    "format": "<span style=\"italic\">{}</span>"
+    "format": "<span style=\"italic\">{}</span>",
   },
 
   "sway/window": {
     "max-length": 60,
-    "tooltip": false
+    "tooltip": false,
   },
 
   "idle_inhibitor": {
@@ -61,13 +61,13 @@
     "format": "{icon}",
     "format-icons": { "activated": "󰅶", "deactivated": "󰛊" },
     "tooltip-format-activated": "Idle inhibited — screen stays on",
-    "tooltip-format-deactivated": "Idle normal — swayidle will lock"
+    "tooltip-format-deactivated": "Idle normal — swayidle will lock",
   },
 
   "tray": {
     // nm-applet and blueman-applet are exec'd by the sway config and live here.
     "icon-size": 16,
-    "spacing": 8
+    "spacing": 8,
   },
 
   "pulseaudio": {
@@ -78,7 +78,7 @@
     "format-icons": { "headphone": "󰋋", "default": ["󰕿", "󰖀", "󰕾"] },
     "scroll-step": 5,
     "on-click": "pavucontrol",
-    "tooltip-format": "{desc} — {volume}%"
+    "tooltip-format": "{desc} — {volume}%",
   },
 
   "backlight": {
@@ -86,7 +86,7 @@
     "format": "{icon} {percent}%",
     "format-icons": ["󰃞", "󰃟", "󰃠"],
     "on-scroll-up": "brightnessctl set 2%+",
-    "on-scroll-down": "brightnessctl set 2%-"
+    "on-scroll-down": "brightnessctl set 2%-",
   },
 
   "network": {
@@ -99,13 +99,13 @@
     "format-disconnected": "󰖪 offline",
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}\n↓{bandwidthDownBits} ↑{bandwidthUpBits}",
     "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}",
-    "on-click": "nm-connection-editor"
+    "on-click": "nm-connection-editor",
   },
 
   "cpu": {
     "format": "󰻠 {usage}%",
     "interval": 3,
-    "tooltip": false
+    "tooltip": false,
   },
 
   "temperature": {
@@ -119,13 +119,13 @@
     "format": "{icon} {temperatureC}°C",
     "format-critical": "󰸁 {temperatureC}°C",
     "format-icons": ["󰜗", "󰔏", "󰸁"],
-    "interval": 5
+    "interval": 5,
   },
 
   "memory": {
     "format": "󰍛 {percentage}%",
     "tooltip-format": "{used:0.1f}G / {total:0.1f}G",
-    "interval": 5
+    "interval": 5,
   },
 
   "battery": {
@@ -136,7 +136,7 @@
     "format-charging": "󰂄 {capacity}%",
     "format-plugged": "󰚥 {capacity}%",
     "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"],
-    "tooltip-format": "{timeTo} ({power:0.1f}W)"
+    "tooltip-format": "{timeTo} ({power:0.1f}W)",
   },
 
   "clock": {
@@ -150,9 +150,9 @@
         "months": "<span color='#cdd6f4'><b>{}</b></span>",
         "days": "<span color='#a6adc8'>{}</span>",
         "weekdays": "<span color='#89b4fa'><b>{}</b></span>",
-        "today": "<span color='#fbc628'><b>{}</b></span>"
-      }
+        "today": "<span color='#fbc628'><b>{}</b></span>",
+      },
     },
-    "actions": { "on-click-right": "mode" }
-  }
+    "actions": { "on-click-right": "mode" },
+  },
 }
