@@ -56,6 +56,34 @@ alias v="nvim"
 # otherwise `dot status` would list every file in your home directory.
 alias dot='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
 alias swayconf="nvim $XDG_CONFIG_HOME/sway/config"
+# After a reboot: load the GitLab key into the shared ssh-agent, so the
+# claude-rc@* Remote Control servers can push from phone sessions.
+alias gitlab-unlock='ssh-add ~/.ssh/id_ed25519_gitlab'
+alias glu='gitlab-unlock'
+alias github-unlock='ssh-add ~/.ssh/id_ed25519_github'
+alias ghu='github-unlock'
+# Same for pass: cache the passphrase of the pass encryption subkey in
+# gpg-agent until reboot (needs allow-preset-passphrase in gpg-agent.conf).
+# Checked with a real decrypt; a wrong passphrase is cleared again.
+pass-unlock() {
+  local grip=613E4706D6FB75C2EDAB29BA4B0C27D984D62C58 pw
+  local probe=$(find ~/.password-store -name '*.gpg' -print -quit)
+  read -rs "pw?pass passphrase: " && print
+  print -r -- "$pw" | /usr/lib/gnupg/gpg-preset-passphrase --preset $grip
+  unset pw
+  if gpg --batch --pinentry-mode error -d "$probe" >/dev/null 2>&1; then
+    print "pass unlocked until reboot (pass-lock to lock)"
+  else
+    gpg-connect-agent reloadagent /bye >/dev/null
+    print "wrong passphrase, nothing cached" >&2
+    return 1
+  fi
+}
+# Clears every cached gpg passphrase.
+alias pass-lock='gpg-connect-agent reloadagent /bye >/dev/null && print "pass locked"'
+alias pu='pass-unlock'
+alias pl='pass-lock'
+alias экзоскелет="nvim"
 
 
 # Powerlevel10k customization

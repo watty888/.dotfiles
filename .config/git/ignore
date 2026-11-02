@@ -123,3 +123,6 @@ paru/
 *.gz
 *.7z
 *.iso
+
+# --- Claude Code worktrees (remote-control --spawn worktree), in every repo ---
+.claude/worktrees/

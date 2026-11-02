@@ -1,0 +1,29 @@
+[Unit]
+# One Remote Control server per repo, so each repo shows up as its own
+# environment in the Claude mobile app / claude.ai/code. Instance name is the
+# directory under ~/Projects: claude-rc@voxwerk-business, @voicebots, @voxwerk-site.
+Description=Claude Code Remote Control server for ~/Projects/%i
+After=network-online.target ssh-agent.socket
+Wants=network-online.target
+# Server mode exits after ~10 min without network; keep restarting forever
+# rather than giving up after systemd's default burst limit.
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Projects/%i
+# The user PATH lives in .zshrc (interactive only), so the unit sets its own.
+# Sessions' Bash tool still sources the zsh config via SHELL, which brings in fnm.
+Environment=PATH=%h/.local/bin:%h/.cargo/bin:%h/.bun/bin:%h/.local/share/fnm:/usr/local/bin:/usr/bin
+Environment=SHELL=/usr/bin/zsh
+Environment=FNM_DIR=%h/.local/share/fnm
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+# worktree: every session started from the phone gets its own git worktree under
+# .claude/worktrees/, so parallel sessions never touch the main checkout.
+# no-create-session-in-dir: no session sits in the main checkout waiting.
+ExecStart=%h/.local/bin/claude remote-control --spawn worktree --no-create-session-in-dir --remote-control-session-name-prefix %i
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=default.target
