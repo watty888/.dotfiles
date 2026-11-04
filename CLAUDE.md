@@ -197,6 +197,12 @@ boot-time module option, not the live domain; that is not a fault.
   be done *at the machine* — you cannot enable it remotely. If you do re-enable it, set
   up key-only auth at that point: `~/.ssh/authorized_keys` does not exist and OpenSSH
   defaults `PasswordAuthentication` to `yes`.
+- **`anydesk-bin` (AUR) is installed on purpose, for outbound use only**: connecting
+  *to* a family member's Windows PC to help them. Keep `anydesk.service` disabled; that
+  service is for unattended inbound access, which isn't needed here. AnyDesk sometimes
+  re-uploads a release without changing the version number, so if an upgrade fails its
+  checksum check, delete the stale tarball in `~/.cache/paru/clone/anydesk-bin/` and
+  upgrade again.
 - `default deny incoming` also blocks inbound mDNS, so Chromecast discovery in the
   browser won't work until you add:
   `sudo ufw allow from 192.168.0.0/24 to any port 5353 proto udp`
