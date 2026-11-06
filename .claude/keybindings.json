@@ -21,8 +21,7 @@
         "enter": "chat:submit",
         "up": "history:previous",
         "down": "history:next",
-        "ctrl+_": "chat:undo",
-        "ctrl+shift+-": "chat:undo",
+        "meta+z": "chat:undo",
         "ctrl+g": "chat:externalEditor",
         "ctrl+s": "chat:stash",
         "ctrl+v": "chat:imagePaste"
