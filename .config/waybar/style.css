@@ -78,6 +78,7 @@ window#waybar.hidden {
 
 /* ── Common module chrome ───────────────────────────────────────────────── */
 #language,
+#scratchpad,
 #mode,
 #window,
 #clock,
@@ -137,6 +138,9 @@ window#waybar.empty #window {
 /* ── Per-module accents ─────────────────────────────────────────────────── */
 /* Layout indicator — mauve so it does not read as a status warning. */
 #language             { color: @mauve; font-weight: bold; }
+
+/* Scratchpad count — sits next to the workspaces, so keep it quiet. */
+#scratchpad           { color: @subtext0; }
 
 #idle_inhibitor       { color: @overlay0; }
 #idle_inhibitor.activated { color: @base; background-color: @teal; }

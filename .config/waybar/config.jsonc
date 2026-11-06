@@ -16,7 +16,7 @@
   // Dell on DP-3 only, laptop = eDP-1 only), and waybar follows whatever
   // exists, so listing both here is what keeps the bar present in either
   // profile rather than only on the laptop panel.
-  "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
+  "modules-left": ["sway/workspaces", "sway/scratchpad", "sway/mode", "sway/window"],
   "modules-center": ["clock"],
   "modules-right": [
     "idle_inhibitor",
@@ -35,6 +35,17 @@
     "disable-scroll": true,
     "all-outputs": false,
     "format": "{name}",
+  },
+
+  // Count of windows hidden in the sway scratchpad (Spotify and Telegram go
+  // there by default — see .config/sway/config.d/scratchpad.conf). Hidden
+  // entirely when the scratchpad is empty; hover lists what's in it.
+  "sway/scratchpad": {
+    "format": "{icon} {count}",
+    "show-empty": false,
+    "format-icons": ["", ""],
+    "tooltip": true,
+    "tooltip-format": "{app}: {title}",
   },
 
   "sway/language": {
