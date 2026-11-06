@@ -17,7 +17,7 @@
 
 case $1 in
     spotify)  crit='[class="^Spotify$"]';                             cmd=spotify-launcher ;;
-    telegram) crit='[app_id="^org\.telegram\.desktop$" title="^Telegram"]'; cmd=Telegram ;;
+    telegram) crit='[app_id="^org\.telegram\.desktop$" title="Telegram|\(\d+\)$"]'; cmd=Telegram ;;
     discord)  crit='[app_id="^discord$"]';                            cmd=discord ;;
     thunar)   crit='[app_id="^thunar$" title=" - Thunar$"]';          cmd=thunar ;;
     *) echo "usage: $0 spotify|telegram|discord|thunar" >&2; exit 2 ;;
