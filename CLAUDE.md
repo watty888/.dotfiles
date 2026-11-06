@@ -67,8 +67,8 @@ for Ableton and games. See "Storage layout" below before assuming device paths.
   socket-activated systemd unit `ssh-agent.socket`. GnuPG's ssh emulation
   (`gpg-agent-ssh.socket`) is masked — do not re-enable both at once.
 - Don't confuse the two SSH roles: the agent above is the **client** side, holding keys
-  for outbound use (GitHub/GitLab/dotfiles). The SSH **server** (`sshd`) is disabled —
-  see "Firewall & remote access".
+  for outbound use (GitHub/GitLab/dotfiles). The SSH **server** (`sshd`) is the
+  inbound side, reached from the phone over Tailscale — see "Firewall & remote access".
 
 ### Shell Keyboard Shortcuts
 - `Ctrl+R` → fzf-powered command history search
@@ -187,22 +187,28 @@ boot-time module option, not the live domain; that is not a fault.
 ### Firewall & remote access
 
 - **`ufw` is the firewall**, enabled and active: default deny incoming, allow outgoing,
-  with a single rule allowing tcp/22 from `192.168.0.0/24`. Inspect with
-  `sudo ufw status verbose`. Manage the firewall through ufw, not by editing nftables —
-  the stock `/etc/nftables.conf` is untouched and `nftables.service` stays disabled.
-  Never run both; they fight over the same netfilter engine.
-- **`sshd` is disabled and nothing listens on port 22.** It was only ever used from a
-  work laptop that has since been wiped and returned. To bring it back:
-  `sudo systemctl enable --now sshd` (the ufw rule is already in place). Note this must
-  be done *at the machine* — you cannot enable it remotely. If you do re-enable it, set
-  up key-only auth at that point: `~/.ssh/authorized_keys` does not exist and OpenSSH
-  defaults `PasswordAuthentication` to `yes`.
+  with rules allowing tcp/22 from `192.168.0.0/24` (LAN fallback) and in on
+  `tailscale0`. Inspect with `sudo ufw status verbose`. Manage the firewall
+  through ufw, not by editing nftables — the stock `/etc/nftables.conf` is untouched and
+  `nftables.service` stays disabled. Never run both; they fight over the same netfilter
+  engine.
+- **Remote access is Tailscale.** `tailscaled` is enabled; the laptop and the phone are
+  on one tailnet, and the laptop's node key expiry is disabled in the admin console.
+  Get the laptop's address with `tailscale ip -4`.
 - **`anydesk-bin` (AUR) is installed on purpose, for outbound use only**: connecting
   *to* a family member's Windows PC to help them. Keep `anydesk.service` disabled; that
   service is for unattended inbound access, which isn't needed here. AnyDesk sometimes
   re-uploads a release without changing the version number, so if an upgrade fails its
   checksum check, delete the stale tarball in `~/.cache/paru/clone/anydesk-bin/` and
   upgrade again.
+- **`sshd` is enabled, key-only.** Rules live in
+  `/etc/ssh/sshd_config.d/10-remote-access.conf` (no passwords, no root, `AllowUsers
+  watty`); the `10-` prefix makes it win over `99-archlinux.conf`, since sshd takes the
+  first value it reads. The phone's key is in `~/.ssh/authorized_keys`. sshd listens on
+  all interfaces on purpose — binding to the Tailscale IP fails if sshd starts before
+  `tailscaled` — and ufw does the restricting. Works before login, so after a reboot
+  SSH in from the phone to unlock agents.
+- Lid close suspends, and nothing reaches a suspended laptop.
 - `default deny incoming` also blocks inbound mDNS, so Chromecast discovery in the
   browser won't work until you add:
   `sudo ufw allow from 192.168.0.0/24 to any port 5353 proto udp`
@@ -220,6 +226,9 @@ boot-time module option, not the live domain; that is not a fault.
 - `status.showUntrackedFiles = no` is set, so `dot status` will **never** list new
   files. Add anything new by explicit path, and check `git check-ignore -v <path>`
   if an add is refused.
+- Machine-local files kept out of the public repo are listed in
+  `~/.dotfiles/info/exclude` (e.g. `~/.claude/CLAUDE.md`, which holds machine-local
+  notes, and `~/.config/sway/config.d/local.conf`). Don't add them.
 - Never use `dot add -A` / `dot add .` from `$HOME` — it sweeps in browser profiles
   and credentials. Stage by explicit path.
 
