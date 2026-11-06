@@ -65,6 +65,11 @@ only applies the theme to the running session, so `lua/plugins/astroui.lua` over
 `astroui.opts.colorscheme` reads that value back on the next start via `require("theme").load()`,
 falling back to `catppuccin-mocha`.
 
+Neovim 0.12 bundles its own `colors/catppuccin.vim`, which shadows the plugin's `catppuccin.lua`
+(`:colorscheme` tries `.vim` before `.lua`) and ignores the plugin's `opts`, so it draws an opaque
+background. `lua/theme.lua` therefore rewrites the bare name `catppuccin` to `catppuccin-mocha` on
+save and on load.
+
 Delete `$XDG_STATE_HOME/nvim/colorscheme` (`~/.local/state/nvim/colorscheme`) to return to the default.
 
 Installed theme families: catppuccin, tokyonight, kanagawa, rose-pine, gruvbox, astrotheme. Add
