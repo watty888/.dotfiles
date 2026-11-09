@@ -1,6 +1,7 @@
 7zip
 adwaita-icon-theme
 alsa-utils
+antigravity
 anydesk-bin
 base
 base-devel
@@ -11,6 +12,7 @@ bluez-utils
 brave-bin
 brightnessctl
 cmake
+crawl-ncurses
 discord
 dkms
 docker
@@ -32,6 +34,7 @@ greetd
 greetd-tuigreet
 grim
 grub
+gtypist
 gvfs
 himalaya
 htop
@@ -57,6 +60,7 @@ man-pages
 mesa-utils
 mpv
 neovim
+nethack
 networkmanager
 network-manager-applet
 ngrok
@@ -67,6 +71,7 @@ noto-fonts-emoji
 npm
 ntfs-3g
 nvidia-580xx-dkms
+openai-codex
 openssh
 pacman-contrib
 papirus-icon-theme
@@ -96,6 +101,7 @@ sway
 swaybg
 swayidle
 swaylock-effects
+tailscale
 telegram-desktop
 thunar
 thunar-archive-plugin
@@ -114,6 +120,7 @@ vim
 vulkan-intel
 vulkan-tools
 waybar
+wayvnc
 webkitgtk-6.0
 wf-recorder
 wget

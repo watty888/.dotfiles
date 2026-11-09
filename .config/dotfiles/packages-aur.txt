@@ -1,7 +1,9 @@
+antigravity
 anydesk-bin
 appimagelauncher
 argagg
 brave-bin
+gtypist
 ngrok
 nvidia-580xx-dkms
 nvidia-580xx-utils
