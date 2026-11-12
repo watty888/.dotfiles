@@ -146,3 +146,14 @@ function y() {
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+
+# Follow the desktop light/dark theme ($mod+Shift+t, ~/.config/sway/scripts/theme-switch.sh):
+# .p10k.zsh picks its palette from the recorded theme, so when that changes, re-source it
+# and reload the prompt. Runs before p10k's own precmd, so the very next prompt is recoloured.
+_p10k_follow_theme() {
+  local f=${XDG_STATE_HOME:-$HOME/.local/state}/desktop-theme t=latte
+  [[ -r $f && "$(<$f)" == mocha ]] && t=mocha
+  [[ $t == ${_p10k_theme:-} ]] && return
+  source ~/.config/zsh/.p10k.zsh && (( $+functions[p10k] )) && p10k reload
+}
+precmd_functions=(_p10k_follow_theme $precmd_functions)

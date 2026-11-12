@@ -3,13 +3,13 @@
 # Full option list: man 5 mako
 
 # ── Appearance ──────────────────────────────────────────────────────────────
-# Catppuccin Mocha, same palette as waybar/kitty/swaylock and the sway window
-# header colors. Font matches kitty and fuzzel (the Nerd Font build, so glyphs
-# in app-supplied summaries render instead of boxes).
+# Colours come from the active light/dark theme (Catppuccin Latte or Mocha, same
+# as waybar/kitty/swaylock and the sway window header colors): theme is a symlink
+# to themes/latte or themes/mocha, flipped by ~/.config/sway/scripts/theme-switch.sh.
+# Font matches kitty and fuzzel (the Nerd Font build, so glyphs in app-supplied
+# summaries render instead of boxes).
 font=JetBrainsMono Nerd Font 11
-background-color=#1e1e2e
-text-color=#cdd6f4
-border-color=#89b4fa
+include=~/.config/mako/theme
 border-size=2
 border-radius=8
 padding=12
@@ -38,17 +38,11 @@ actions=1
 
 # ── Per-urgency overrides ───────────────────────────────────────────────────
 [urgency=low]
-border-color=#585b70
 default-timeout=3000
 
-[urgency=normal]
-border-color=#89b4fa
-
 # Critical notifications never auto-dismiss — they stay until you act on them.
-# Same red as client.urgent in the sway config.
+# Border and text are the theme's red, same as client.urgent in the sway config.
 [urgency=critical]
-border-color=#f38ba8
-text-color=#f38ba8
 default-timeout=0
 
 # ── Do-not-disturb ──────────────────────────────────────────────────────────

@@ -4,12 +4,12 @@
 
 local M = {}
 
-local default = "catppuccin-mocha"
+local default = "catppuccin-latte"
 local statefile = vim.fs.joinpath(vim.fn.stdpath "state" --[[@as string]], "colorscheme")
 
 -- Neovim 0.12 bundles its own `colors/catppuccin.vim`, and `:colorscheme` prefers .vim over .lua,
 -- so the bare name loads the built-in (opaque, ignores plugin opts) instead of catppuccin/nvim.
-local aliases = { catppuccin = "catppuccin-mocha" }
+local aliases = { catppuccin = "catppuccin-latte" }
 
 ---@param name string
 ---@return string

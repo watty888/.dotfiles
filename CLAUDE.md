@@ -11,6 +11,10 @@ This is an Arch Linux development system with support for multiple programming l
 - **Editor**: Neovim 0.12.5 (primary), Vim (fallback)
 - **Desktop**: Sway (Wayland) with waybar, mako, swaylock-effects, fuzzel, kanshi
 - **Terminal**: kitty
+- **Theme**: Catppuccin Latte (light) / Mocha (dark), toggled with `$mod+Shift+t` via
+  `~/.config/sway/scripts/theme-switch.sh` (header explains the mechanism). Each app keeps
+  both palettes in `<app>/themes/` and includes an untracked symlink the script flips, so
+  edit colours in the `themes/` files, not in the main configs.
 
 Root runs from an external USB-attached SATA SSD; the internal NVMe holds Windows
 for Ableton and games. See "Storage layout" below before assuming device paths.

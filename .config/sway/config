@@ -24,14 +24,14 @@ set $lock ~/.config/sway/scripts/lock.sh
 ### Output configuration
 #
 # Background: the wallpaper slideshow below takes over a moment after startup
-# and rotates through ~/Pictures/Wallpapers. This solid Catppuccin Mocha base
+# and rotates through ~/Pictures/Wallpapers. This solid Catppuccin base
 # (matching waybar/kitty/swaylock) is what shows until it does, and what you
 # fall back to if that directory is ever empty.
 #
 # Deliberately not an `output * bg /path/to/image.jpg fill` line: hardcoding a
 # filename here is what broke the last setup, when the named image was gone and
 # the config pointed at nothing. The script picks whatever is actually there.
-output * bg #1e1e2e solid_color
+# The colour itself lives in the theme file (see "Window header colors" below).
 #
 # Example configuration:
 #
@@ -240,7 +240,7 @@ bindsym $mod+r mode "resize"
     bindsym Print exec grim
     
     # Screenshots & screen recording
-    bindsym $mod+Shift+s exec sh -c 'grim -g "$(slurp -b "#00000055" -c "#89b4fa")" - | wl-copy'
+    bindsym $mod+Shift+s exec sh -c 'grim -g "$(slurp -b "#00000055" -c "#1e66f5")" - | wl-copy'
     bindsym $mod+Shift+Ctrl+s exec sh -c 'grim - | wl-copy'
     bindsym $mod+Shift+Ctrl+r exec wf-recorder -g "$(slurp)" -f ~/Videos/recording_$(date +%F_%H-%M-%S).mp4
     bindsym $mod+Shift+Ctrl+e exec pkill -INT wf-recorder
@@ -253,15 +253,19 @@ bindsym $mod+r mode "resize"
     bindsym $mod+Shift+n exec makoctl dismiss --all
     bindsym $mod+Ctrl+n exec makoctl mode -t do-not-disturb
 
+    # Light/dark theme: flips Catppuccin Latte <-> Mocha across sway, waybar,
+    # mako, fuzzel, swaylock, kitty, nvim and the zsh prompt.
+    bindsym $mod+Shift+t exec ~/.config/sway/scripts/theme-switch.sh toggle
+
 # Status Bar:
 #
 # Read `man 5 sway-bar` for more information about this section.
 
 ### Window header colors
-client.focused          #585b70 #fbc628 #1e1e2e #585b70 #585b70
-client.focused_inactive #313244 #1e1e2e #a6adc8 #313244 #313244 
-client.unfocused        #181825 #1e1e2e #6c7086 #181825 #181825
-client.urgent           #1e1e2e #f38ba8 #ffffff #f38ba8 #f38ba8
+# Colours (and the solid fallback background) come from the active theme:
+# theme.conf is a symlink to themes/latte.conf or themes/mocha.conf, flipped by
+# $mod+Shift+t (scripts/theme-switch.sh). It is untracked; the script recreates it.
+include ~/.config/sway/theme.conf
 
 # mako — notification daemon (org.freedesktop.Notifications on DBus).
 # Plain `exec`, not exec_always: only one process can own that DBus name, so a

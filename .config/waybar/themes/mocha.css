@@ -1,0 +1,20 @@
+/* Catppuccin Mocha palette for waybar, imported by ../style.css. */
+
+@define-color base     #1e1e2e;
+@define-color mantle   #181825;
+@define-color surface0 #313244;
+@define-color surface1 #45475a;
+@define-color surface2 #585b70;
+@define-color overlay0 #6c7086;
+@define-color subtext0 #a6adc8;
+@define-color text     #cdd6f4;
+@define-color red      #f38ba8;
+@define-color peach    #fab387;
+@define-color yellow   #f9e2af;
+@define-color green    #a6e3a1;
+@define-color teal     #94e2d5;
+@define-color blue     #89b4fa;
+@define-color mauve    #cba6f7;
+@define-color gold     #fbc628;
+/* Text on the gold focus accent: dark in both themes, gold is light either way. */
+@define-color on_gold  #1e1e2e;

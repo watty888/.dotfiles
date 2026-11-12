@@ -1,7 +1,7 @@
 // waybar — status bar for the sway session.
 //
 // Launched by .config/sway/config: exec_always sh -c 'pkill waybar; waybar'
-// Palette is Catppuccin Mocha (see style.css), matching sway, fuzzel and kitty.
+// Palette is Catppuccin Latte (see style.css), matching sway, fuzzel and kitty.
 //
 // Hardware here is an HP Pavilion Gaming 17-cd0xxx: battery BAT1, AC adapter
 // ACAD, intel_backlight, wifi wlo1. Those names are baked in below where the
@@ -157,10 +157,11 @@
     "calendar": {
       "mode": "month",
       "on-scroll": 1,
+      // No colours except today's gold: everything else inherits the tooltip
+      // text colour from style.css, so it follows the light/dark theme.
       "format": {
-        "months": "<span color='#cdd6f4'><b>{}</b></span>",
-        "days": "<span color='#a6adc8'>{}</span>",
-        "weekdays": "<span color='#89b4fa'><b>{}</b></span>",
+        "months": "<b>{}</b>",
+        "weekdays": "<b>{}</b>",
         "today": "<span color='#fbc628'><b>{}</b></span>",
       },
     },

@@ -49,7 +49,7 @@ return {
 | File                          | Purpose                                                                                                     |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | `lua/plugins/astrocore.lua`   | Vim options, key mappings, autocmds, feature toggles                                                        |
-| `lua/plugins/astroui.lua`     | Colorscheme (persisted, default catppuccin-mocha, transparent bg), icons, highlights; `<Leader>ft` picker persistence      |
+| `lua/plugins/astroui.lua`     | Colorscheme (persisted, default catppuccin-latte, transparent bg), icons, highlights; `<Leader>ft` picker persistence      |
 | `lua/theme.lua`               | Reads/writes the picked colorscheme to `$XDG_STATE_HOME/nvim/colorscheme`                                                 |
 | `lua/plugins/dap.lua`         | DAP for Node.js/Next.js (pwa-node attach, port 9230, source maps)                                           |
 | `lua/plugins/mermaid.lua`     | Inline Mermaid preview via Kitty graphics protocol (`<leader>mp`)                                            |
@@ -63,11 +63,11 @@ it also lists themes from lazy plugins that haven't loaded yet). AstroNvim's def
 only applies the theme to the running session, so `lua/plugins/astroui.lua` overrides
 `picker.sources.colorschemes.confirm` to additionally call `require("theme").save()`.
 `astroui.opts.colorscheme` reads that value back on the next start via `require("theme").load()`,
-falling back to `catppuccin-mocha`.
+falling back to `catppuccin-latte`.
 
 Neovim 0.12 bundles its own `colors/catppuccin.vim`, which shadows the plugin's `catppuccin.lua`
 (`:colorscheme` tries `.vim` before `.lua`) and ignores the plugin's `opts`, so it draws an opaque
-background. `lua/theme.lua` therefore rewrites the bare name `catppuccin` to `catppuccin-mocha` on
+background. `lua/theme.lua` therefore rewrites the bare name `catppuccin` to `catppuccin-latte` on
 save and on load.
 
 Delete `$XDG_STATE_HOME/nvim/colorscheme` (`~/.local/state/nvim/colorscheme`) to return to the default.

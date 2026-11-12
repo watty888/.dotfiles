@@ -25,10 +25,27 @@ saved=$(swaymsg -t get_inputs \
 
 swaymsg input type:keyboard xkb_switch_layout 0 >/dev/null
 
+# Theme colours: ~/.config/swaylock/theme (a symlink to themes/latte or
+# themes/mocha, see theme-switch.sh) holds key=value lines in swaylock's config
+# syntax; each becomes a --key=value flag, which overrides the config file.
+set --
+theme="${XDG_CONFIG_HOME:-$HOME/.config}/swaylock/theme"
+if [ -r "$theme" ]; then
+    while IFS= read -r line; do
+        case "$line" in
+            '' | '#'*) ;;
+            *) set -- "$@" "--$line" ;;
+        esac
+    done < "$theme"
+fi
+
 # -f: fork once the lock surface is actually up. swayidle's before-sleep hook
 # waits on this command, and that wait is the only thing keeping the machine
 # from suspending to an unlocked screen — do not background it instead.
-swaylock -f
+#
+# If the themed call fails (a bad colour line makes swaylock exit on a usage
+# error, without locking), lock again with no theme flags rather than not at all.
+swaylock -f "$@" || swaylock -f
 
 # Restore in a detached watcher so this script returns immediately (see above).
 # swaylock -f orphans its own child, so there is no PID to wait on; polling for

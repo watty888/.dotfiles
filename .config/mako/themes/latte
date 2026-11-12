@@ -1,0 +1,14 @@
+# Catppuccin Latte colours for mako, included from ../config.
+background-color=#eff1f5
+text-color=#4c4f69
+border-color=#1e66f5
+
+[urgency=low]
+border-color=#acb0be
+
+[urgency=normal]
+border-color=#1e66f5
+
+[urgency=critical]
+border-color=#d20f39
+text-color=#d20f39

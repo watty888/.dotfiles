@@ -1,4 +1,4 @@
-# swaylock — lock screen theming, Catppuccin Mocha.
+# swaylock — lock screen theming.
 #
 # Read automatically from $XDG_CONFIG_HOME/swaylock/config, so the sway config
 # only needs `swaylock -f`.
@@ -14,9 +14,11 @@
 # block or the machine stops locking. Check with:
 #     pacman -Qo /usr/bin/swaylock
 
-# Fallback colour, used for any area not covered by the screenshot (and if
-# --screenshots ever fails to grab an output).
-color=1e1e2e
+# Colours are not set here. They come from the active light/dark theme:
+# ~/.config/swaylock/theme is a symlink to themes/latte or themes/mocha (flipped
+# by ~/.config/sway/scripts/theme-switch.sh), and ~/.config/sway/scripts/lock.sh
+# passes each of its lines as a --key=value flag, which overrides this file.
+# That includes `color`, the fallback for any area the screenshot does not cover.
 
 # ── Effects ─────────────────────────────────────────────────────────────────
 # Blurred screenshot of the desktop as the lock background. Note this does put
@@ -45,41 +47,11 @@ datestr=%a %d %b
 indicator-radius=100
 indicator-thickness=10
 indicator-caps-lock
-
-# idle: dark centre, blue ring (matches the sway/waybar accent family)
-inside-color=1e1e2e
-ring-color=89b4fa
 line-uses-inside
-
-# typing: gold key-press segments — the same #fbc628 sway uses for focus
-key-hl-color=fbc628
-bs-hl-color=f38ba8
-separator-color=00000000
-
-# verifying
-inside-ver-color=1e1e2e
-ring-ver-color=94e2d5
-text-ver-color=94e2d5
-
-# wrong password
-inside-wrong-color=1e1e2e
-ring-wrong-color=f38ba8
-text-wrong-color=f38ba8
-
-# cleared
-inside-clear-color=1e1e2e
-ring-clear-color=f9e2af
-text-clear-color=f9e2af
-
-# caps lock — worth shouting about, it is the usual reason a password "fails"
-inside-caps-lock-color=1e1e2e
-ring-caps-lock-color=fab387
-text-caps-lock-color=fab387
-caps-lock-key-hl-color=fab387
-caps-lock-bs-hl-color=f38ba8
+# Ring colours per state (idle blue, typing gold #fbc628 like sway's focus,
+# verifying teal, wrong red, cleared yellow, caps lock peach) are in the theme.
 
 # ── Text ────────────────────────────────────────────────────────────────────
-text-color=cdd6f4
 font=JetBrainsMono Nerd Font
 font-size=20
 

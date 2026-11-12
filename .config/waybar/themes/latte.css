@@ -1,0 +1,20 @@
+/* Catppuccin Latte palette for waybar, imported by ../style.css. */
+
+@define-color base     #eff1f5;
+@define-color mantle   #e6e9ef;
+@define-color surface0 #ccd0da;
+@define-color surface1 #bcc0cc;
+@define-color surface2 #acb0be;
+@define-color overlay0 #9ca0b0;
+@define-color subtext0 #6c6f85;
+@define-color text     #4c4f69;
+@define-color red      #d20f39;
+@define-color peach    #fe640b;
+@define-color yellow   #df8e1d;
+@define-color green    #40a02b;
+@define-color teal     #179299;
+@define-color blue     #1e66f5;
+@define-color mauve    #8839ef;
+@define-color gold     #fbc628;
+/* Text on the gold focus accent: dark in both themes, gold is light either way. */
+@define-color on_gold  #4c4f69;
