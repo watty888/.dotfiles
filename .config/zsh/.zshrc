@@ -62,6 +62,8 @@ alias gitlab-unlock='ssh-add ~/.ssh/id_ed25519_gitlab'
 alias glu='gitlab-unlock'
 alias github-unlock='ssh-add ~/.ssh/id_ed25519_github'
 alias ghu='github-unlock'
+alias hetzner-unlock='ssh-add -t 1h ~/.ssh/id_ed25519_hetzner'
+alias hu='hetzner-unlock'
 # Same for pass: cache the passphrase of the pass encryption subkey in
 # gpg-agent until reboot (needs allow-preset-passphrase in gpg-agent.conf).
 # Checked with a real decrypt; a wrong passphrase is cleared again.
