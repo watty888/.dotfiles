@@ -127,6 +127,31 @@ rather than assuming a `go/`, `java/`, or similar subdirectory already exists.
   make the initramfs large (~291 MB, plus a ~372 MB fallback). A second kernel will not
   fit. Don't strip those modules to make room — they're needed for early KMS.
 
+## Login / session manager
+
+- **greetd** is the display manager (`display-manager.service` → `greetd.service`), on VT 1.
+  Config: `/etc/greetd/config.toml` (a `config.toml.bak` sits next to it).
+- The greeter is **tuigreet inside a minimal Sway**: greetd runs
+  `sway --config /etc/greetd/sway-greeter.conf` as the `greeter` user. That config pins
+  the greeter to the external monitor (falling back to `eDP-1`), disables Xwayland, and
+  execs `/etc/greetd/greeter.sh`, which runs kitty → `tuigreet --time --remember
+  --remember-user-session --asterisks --cmd sway`, then `swaymsg exit` once login
+  hands off.
+- **The greeter follows the Catppuccin theme toggle.** The greeter user can't read
+  `$HOME` (mode 700), so `theme-switch.sh` mirrors the theme word into
+  `/var/lib/greetd/desktop-theme` (owned by watty, 644). `greeter.sh` reads it at
+  startup, sets the Sway background, and loads `/etc/greetd/kitty/kitty.conf` plus
+  `catppuccin-{latte,mocha}.conf`. tuigreet's `--theme` uses ANSI colour names, so it
+  takes its colours from the loaded kitty palette. The palettes in `/etc/greetd/kitty/`
+  are copies of `~/.config/kitty/themes/`; recopy them if those change. The change shows
+  at the next login screen. Don't restart `greetd` to test it from a desktop session:
+  that kills the session.
+- Logging in launches the real user Sway session; there is no Sway autostart in the
+  shell profiles. Sessions are tracked by systemd-logind (`loginctl session-status`
+  shows `Service: greetd`, `Type: wayland`).
+- `greetd-agreety` (fallback greeter) and `seatd` are installed but unused — `seatd`
+  is disabled because logind provides seat access. Don't enable it alongside logind.
+
 ## Development Workflows
 
 ### Node.js / JavaScript

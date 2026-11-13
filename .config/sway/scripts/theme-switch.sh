@@ -41,6 +41,11 @@ esac
 mkdir -p "$state"
 printf '%s\n' "$theme" > "$statefile"
 
+# The login greeter (/etc/greetd/greeter.sh) can't read $HOME, so mirror the choice into
+# a file we own under /var/lib/greetd. Skipped quietly if that one-time setup isn't done.
+greeter_theme=/var/lib/greetd/desktop-theme
+[ -w "$greeter_theme" ] && printf '%s\n' "$theme" > "$greeter_theme"
+
 # ── Point every app at the theme's files ─────────────────────────────────────
 # Relative targets, resolved from the link's own directory.
 link() { ln -sfn "$2" "$cfg/$1"; }
