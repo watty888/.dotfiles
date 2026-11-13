@@ -18,3 +18,9 @@
 @define-color gold     #fbc628;
 /* Text on the gold focus accent: dark in both themes, gold is light either way. */
 @define-color on_gold  #1e1e2e;
+/* Drop shadow under the floating bar (style.css): crust, fairly strong on dark. */
+@define-color shadow   alpha(#11111b, 0.6);
+/* Glass (style.css): bar tint, module pills, and the brighter pill (clock, hover). */
+@define-color glass    alpha(#1e1e2e, 0.6);
+@define-color pill     alpha(#313244, 0.7);
+@define-color pill_hi  alpha(#45475a, 0.7);

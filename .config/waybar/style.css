@@ -17,11 +17,38 @@
   border-radius: 0;
 }
 
+/* Floating bar: the layer-shell window itself is transparent, and the bar is
+ * drawn as a rounded box inside it. The box's margin is the gap to the screen
+ * edges AND the room the shadow is drawn in — GTK clips anything outside the
+ * window, so the gap has to live here, not in config.jsonc's "margin" (that
+ * would move the window and cut the shadow off).
+ *
+ * config.jsonc's "height" is the whole window: 34px of bar + the vertical
+ * margins below. Change both together. */
 window#waybar {
-  /* Matches kitty's background_opacity 0.95 rather than being fully opaque,
-   * so the bar and the terminal sit on the wallpaper the same way. */
-  background-color: alpha(@base, 0.95);
+  background-color: transparent;
   color: @text;
+}
+
+/* Glass, after a website header's liquid-glass navbar: a translucent tint, a faint white sheen
+ * fading out by 45% of the height, and a soft inner glow. The site also blurs
+ * what is behind it (backdrop-filter); GTK3 can't, and plain sway has no
+ * blur. The opacities are per theme (@glass, @pill, @pill_hi in themes/{latte,mocha}.css):
+ * Mocha's dark tint stays at 60% so busy wallpapers don't fight the light
+ * text, while Latte's near-white tint is the site's 30%, as anything denser
+ * reads as a solid slab. The module pills are translucent too, so the glass
+ * reads through them. */
+window#waybar > box {
+  margin: 8px 10px;
+  /* Modules are 8px-rounded with 4px around them; 12px keeps the corners
+   * concentric. */
+  border-radius: 12px;
+  background-color: @glass;  /* per theme, see themes/{latte,mocha}.css */
+  background-image: linear-gradient(to bottom, alpha(white, 0.1), transparent 45%);
+  box-shadow:
+    inset 0 0 20px alpha(white, 0.06),
+    /* 2px down + 6px blur = 8px, exactly the margin, so nothing is clipped. */
+    0 2px 6px @shadow;
 }
 
 window#waybar.hidden {
@@ -75,7 +102,7 @@ window#waybar.hidden {
   padding: 0 10px;
   margin: 0 2px;
   color: @overlay0;
-  background-color: @surface0;
+  background-color: @pill;  /* translucent, per theme: glass shows through */
   border-radius: 8px;
   /* Cheap-looking transitions are worse than none; keep it to colour. */
   transition: background-color 0.15s ease, color 0.15s ease;
@@ -83,7 +110,7 @@ window#waybar.hidden {
 
 #workspaces button:hover {
   color: @text;
-  background-color: @surface1;
+  background-color: @pill_hi;  /* translucent, per theme: glass shows through */
   /* GTK draws a box-shadow on hover by default — suppress it. */
   box-shadow: none;
   text-shadow: none;
@@ -119,7 +146,7 @@ window#waybar.hidden {
   padding: 0 12px;
   margin: 4px 2px;
   border-radius: 8px;
-  background-color: @surface0;
+  background-color: @pill;  /* translucent, per theme: glass shows through */
   color: @text;
 }
 
@@ -142,13 +169,13 @@ window#waybar.empty #window {
 }
 
 #clock {
-  background-color: @surface1;
+  background-color: @pill_hi;  /* translucent, per theme: glass shows through */
   color: @text;
   font-weight: bold;
 }
 
 #tray {
-  background-color: @surface0;
+  background-color: @pill;  /* translucent, per theme: glass shows through */
 }
 
 #tray > .passive {

@@ -18,3 +18,10 @@
 @define-color gold     #fbc628;
 /* Text on the gold focus accent: dark in both themes, gold is light either way. */
 @define-color on_gold  #4c4f69;
+/* Drop shadow under the floating bar (style.css): text colour, kept soft on light. */
+@define-color shadow   alpha(#4c4f69, 0.3);
+/* Glass (style.css). Latte's near-white tint reads as a solid slab at the
+ * opacity that works for dark Mocha, so both layers are much thinner here. */
+@define-color glass    alpha(#eff1f5, 0.3);
+@define-color pill     alpha(#ccd0da, 0.45);
+@define-color pill_hi  alpha(#bcc0cc, 0.55);

@@ -9,7 +9,7 @@
 {
   "layer": "top",
   "position": "top",
-  "height": 34,
+  "height": 50,  // 34px bar + 8px floating gap above and below (see style.css)
   "spacing": 4,
 
   // Both outputs get a bar. kanshi drives which ones are live (docked = the
