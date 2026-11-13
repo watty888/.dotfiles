@@ -16,7 +16,7 @@
   // Dell on DP-3 only, laptop = eDP-1 only), and waybar follows whatever
   // exists, so listing both here is what keeps the bar present in either
   // profile rather than only on the laptop panel.
-  "modules-left": ["sway/workspaces", "sway/scratchpad", "sway/mode", "sway/window"],
+  "modules-left": ["custom/arch", "sway/workspaces", "sway/scratchpad", "sway/mode", "sway/window"],
   "modules-center": ["clock"],
   "modules-right": [
     "idle_inhibitor",
@@ -30,6 +30,21 @@
     "battery",
     "tray",
   ],
+
+  // Arch logo at the far left, doubling as the "system" button.
+  // Shows the pending update count (repo + AUR) next to the logo when there is
+  // one; hover lists the packages. Left-click runs paru in kitty, right-click
+  // opens the power menu (incl. one-shot "Reboot into Windows" via grub-reboot).
+  // Checks hourly; update-run.sh sends signal 8 to refresh after upgrading.
+  "custom/arch": {
+    "exec": "~/.config/waybar/scripts/updates.sh",
+    "return-type": "json",
+    "interval": 3600,
+    "signal": 8,
+    "format": "{}",
+    "on-click": "~/.config/waybar/scripts/update-run.sh",
+    "on-click-right": "~/.config/waybar/scripts/power-menu.sh",
+  },
 
   "sway/workspaces": {
     "disable-scroll": true,

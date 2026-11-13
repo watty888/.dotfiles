@@ -28,6 +28,44 @@ window#waybar.hidden {
   opacity: 0.2;
 }
 
+/* ── Arch logo ──────────────────────────────────────────────────────────── */
+/* Left of the workspaces. Arch blue; no pill, so it reads as a badge.
+ * With updates pending it becomes a peach pill carrying the count. */
+#custom-arch {
+  padding: 0 6px 0 12px;
+  /* Thinner vertical margin than other modules: at 16pt the glyph would
+   * otherwise push the bar past its 34px height. */
+  margin: 1px 0;
+  border-radius: 8px;
+  color: @blue;
+  font-size: 16pt;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Hover hint that the logo is clickable: blue -> mauve, Catppuccin's
+ * neighbouring accent. In the update state the pill brightens instead.
+ *
+ * Why `*:hover > #custom-arch` and not `#custom-arch:hover`: since waybar
+ * 0.16 a custom module is event box -> box -> label. The #custom-arch name is
+ * on the label, but waybar puts the hover state on the box above it, so the
+ * plain :hover selector never matches. */
+*:hover > #custom-arch {
+  color: @mauve;
+}
+
+#custom-arch.updates {
+  padding: 0 10px;
+  margin: 1px 2px 1px 6px;
+  color: @base;
+  background-color: @peach;
+  font-weight: bold;
+}
+
+*:hover > #custom-arch.updates {
+  color: @base;
+  background-color: @yellow;
+}
+
 /* ── Workspaces ─────────────────────────────────────────────────────────── */
 #workspaces {
   margin: 4px 4px;
