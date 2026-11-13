@@ -261,6 +261,27 @@ bindsym $mod+r mode "resize"
 #
 # Read `man 5 sway-bar` for more information about this section.
 
+### Window borders and gaps
+# Windows float like waybar does (see waybar/style.css): no title bars, a thin
+# border that turns gold on the focused window (the gold of the focused
+# workspace pill), and gaps that line up with the bar's edges. Waybar's
+# sway/window module already shows the focused window's title; tabbed and
+# stacked containers still draw their tab titles.
+default_border pixel 2
+default_floating_border pixel 2
+
+# Tab and stack titles in the same face and size as waybar and kitty.
+font pango:JetBrainsMono Nerd Font 11
+
+# Waybar's rounded box sits 10px in from the screen sides with 8px of window
+# below it. Sway's gap at a screen edge is inner + outer, so inner 8 between
+# windows plus outer 2 puts the window edges at 10px, flush with the bar. At
+# the top the bar's own bottom margin already provides the 8px, so top -8
+# cancels the inner gap there instead of doubling it.
+gaps inner 8
+gaps outer 2
+gaps top -8
+
 ### Window header colors
 # Colours (and the solid fallback background) come from the active theme:
 # theme.conf is a symlink to themes/latte.conf or themes/mocha.conf, flipped by
