@@ -1,6 +1,17 @@
 #!/bin/sh
 # Rotate the sway background through the images in ~/Pictures/Wallpapers.
 #
+# Follows the Catppuccin theme toggle. Images directly in the folder show in
+# both themes; images in its mocha/ or latte/ subfolder show only in that theme:
+#
+#   ~/Pictures/Wallpapers/*.jpg        always
+#   ~/Pictures/Wallpapers/mocha/*.jpg  dark theme only
+#   ~/Pictures/Wallpapers/latte/*.jpg  light theme only
+#
+# The theme is read from $XDG_STATE_HOME/desktop-theme at the start of every
+# cycle. theme-switch.sh sends this script SIGUSR1 after switching, which makes
+# it reshuffle for the new theme and change the wallpaper straight away.
+#
 # Started from .config/sway/config with exec_always, so a sway reload restarts
 # it. The pidfile below kills the previous instance first — without it every
 # reload stacks another timer and the wallpaper starts flipping several times
@@ -30,6 +41,10 @@ cleanup() {
 # SIGTERM the reload path sends it.
 trap 'cleanup; exit 0' INT TERM
 trap cleanup EXIT
+# Installed before the pidfile is written: USR1's default action is to
+# terminate, so theme-switch.sh must never find a pid that can't handle it yet.
+theme_changed=0
+trap 'theme_changed=1' USR1
 
 # Sleep in the background and wait on it. A foreground `sleep` makes the shell
 # defer the trap until the sleep returns, so a replaced instance would keep
@@ -38,6 +53,8 @@ nap() {
 	sleep "$1" &
 	sleep_pid=$!
 	wait "$sleep_pid" 2>/dev/null || true
+	# A trapped USR1 cuts the wait short and leaves the sleep running.
+	kill "$sleep_pid" 2>/dev/null || true
 	sleep_pid=''
 }
 
@@ -69,18 +86,31 @@ if [ -r "$PIDFILE" ]; then
 fi
 echo $$ > "$PIDFILE"
 
+current_theme() {
+	if [ "$(cat "${XDG_STATE_HOME:-$HOME/.local/state}/desktop-theme" 2>/dev/null)" = mocha ]; then
+		echo mocha
+	else
+		echo latte   # theme-switch.sh's default too
+	fi
+}
+
+# Shared images plus the current theme's subfolder. A missing subfolder is
+# fine: find only complains about it, and that goes to /dev/null.
 # swaybg reads whatever gdk-pixbuf supports; this is the useful subset.
 list_images() {
-	find -L "$DIR" -maxdepth 1 -type f \
+	find -L "$DIR" "$DIR/$(current_theme)" -maxdepth 1 -type f \
 		\( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \
-		-o -iname '*.webp' -o -iname '*.bmp' -o -iname '*.gif' \) |
-		sort
+		-o -iname '*.webp' -o -iname '*.bmp' -o -iname '*.gif' \) \
+		2>/dev/null | sort || true
 }
 
 last=''
 warned=0
 
 while :; do
+	# Cleared before listing, so a switch that lands mid-listing still
+	# triggers another pass rather than being lost.
+	theme_changed=0
 	images=$(list_images | shuf)
 
 	if [ -z "$images" ]; then
@@ -111,6 +141,8 @@ while :; do
 		fi
 		last="$img"
 		nap "$INTERVAL"
+		# Theme switched: abandon this shuffle and build one for the new theme.
+		[ "$theme_changed" -eq 0 ] || break
 	done <<-EOF
 		$images
 	EOF

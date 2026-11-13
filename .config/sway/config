@@ -317,7 +317,8 @@ exec_always sh -c 'pkill kanshi; kanshi'
 bindsym --no-repeat --locked Mod1+Shift_L input type:keyboard xkb_switch_layout next
 bindsym --no-repeat --locked Shift+Alt_L  input type:keyboard xkb_switch_layout next
 
-# Wallpaper slideshow: cycles ~/Pictures/Wallpapers every 10 minutes. Tune it
+# Wallpaper slideshow: cycles ~/Pictures/Wallpapers once a day, plus its mocha/ or
+# latte/ subfolder to match the theme (see the script's header). Tune it
 # with WALLPAPER_DIR / WALLPAPER_INTERVAL / WALLPAPER_MODE, e.g.
 #     exec_always env WALLPAPER_INTERVAL=300 ~/.config/sway/scripts/wallpaper-slideshow.sh
 # exec_always, not exec, so `swaymsg reload` picks up script edits; the script

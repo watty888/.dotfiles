@@ -20,7 +20,7 @@
 #   kitty     kitty/current-theme.conf -> themes/catppuccin-{latte,mocha}.conf
 #
 # The zsh prompt reads the recorded theme itself (.p10k.zsh, reloaded by a precmd hook in
-# .zshrc). Neovim is switched only while it is on a catppuccin flavour, so a different
+# .zshrc), and so does swayimg (swayimg/init.lua, at startup only). Neovim is switched only while it is on a catppuccin flavour, so a different
 # colorscheme picked with <Leader>ft is left alone.
 set -u
 
@@ -66,6 +66,16 @@ grep '^client\.' "$cfg/sway/theme.conf" | while IFS= read -r line; do
 done
 
 pkill -USR2 -x waybar   # reload style.css
+
+# Wallpaper slideshow: USR1 makes it reshuffle from the new theme's folder now.
+# Found through its pidfile, and the pid's command line is checked first: a stale
+# pid may have been reused by another process, which USR1 would simply kill.
+slideshow_pid=$(cat "${XDG_RUNTIME_DIR:-/tmp}/wallpaper-slideshow.pid" 2>/dev/null) || slideshow_pid=
+case "$slideshow_pid" in
+    '' | *[!0-9]*) ;;
+    *) tr '\0' ' ' < "/proc/$slideshow_pid/cmdline" 2>/dev/null | grep -q wallpaper-slideshow &&
+           kill -USR1 "$slideshow_pid" 2>/dev/null ;;
+esac
 makoctl reload
 pkill -USR1 -x kitty    # every kitty window re-reads kitty.conf
 
