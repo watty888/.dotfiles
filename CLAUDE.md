@@ -146,6 +146,18 @@ rather than assuming a `go/`, `java/`, or similar subdirectory already exists.
   are copies of `~/.config/kitty/themes/`; recopy them if those change. The change shows
   at the next login screen. Don't restart `greetd` to test it from a desktop session:
   that kills the session.
+- **Matrix rain background**: this tuigreet build has background animations (F4 switches
+  between matrix/doom/none at runtime). `/etc/tuigreet/config.toml` makes `matrix` the
+  default. Its colours must be literal hex, not ANSI names, so `greeter.sh` passes
+  `--matrix-colors` with Catppuccin blues (matching the outline and clock) for the
+  current theme. That flag overrides the fallback colours in config.toml. Preview
+  without logging out using
+  `tuigreet --mock --background matrix --matrix-colors HEAD,BRIGHT,DIM` in a kitty window.
+- **Login box**: plain blue outline, with the inside cleared to the background (the rain
+  doesn't draw there). Tried and rejected: a filled panel (`--theme container=`), with
+  and without the outline. tuigreet fills the border cells too, and kitty draws box lines
+  mid-cell, so half a cell of fill sticks out past the outline. `--theme` takes only
+  `component=color`, with no border background, style or thickness.
 - Logging in launches the real user Sway session; there is no Sway autostart in the
   shell profiles. Sessions are tracked by systemd-logind (`loginctl session-status`
   shows `Service: greetd`, `Type: wayland`).
