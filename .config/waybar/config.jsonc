@@ -16,16 +16,16 @@
   // Dell on DP-3 only, laptop = eDP-1 only), and waybar follows whatever
   // exists, so listing both here is what keeps the bar present in either
   // profile rather than only on the laptop panel.
-  "modules-left": ["custom/arch", "sway/workspaces", "sway/scratchpad", "sway/mode", "sway/window"],
+  "modules-left": ["custom/arch", "sway/workspaces", "custom/scratchpad", "sway/mode", "sway/window"],
   "modules-center": ["clock"],
   "modules-right": [
+    "privacy",
+    "custom/media",
     "idle_inhibitor",
-    "backlight",
-    "cpu",
-    "temperature",
-    "memory",
-    "pulseaudio",
+    "custom/sysmon",
+    "group/levels",
     "network",
+    "custom/tailscale",
     "sway/language",
     "battery",
     "tray",
@@ -55,12 +55,13 @@
   // Count of windows hidden in the sway scratchpad (Spotify and Telegram go
   // there by default — see .config/sway/config.d/scratchpad.conf). Hidden
   // entirely when the scratchpad is empty; hover lists what's in it.
-  "sway/scratchpad": {
-    "format": "{icon} {count}",
-    "show-empty": false,
-    "format-icons": ["", ""],
-    "tooltip": true,
-    "tooltip-format": "{app}: {title}",
+  // A script, not the built-in sway/scratchpad module, so that btop (which
+  // lives in the scratchpad permanently) isn't counted. Event-driven.
+  "custom/scratchpad": {
+    "exec": "~/.config/waybar/scripts/scratchpad.sh",
+    "return-type": "json",
+    "restart-interval": 5,
+    "format": "\uf2d2 {}",
   },
 
   "sway/language": {
@@ -96,9 +97,49 @@
     "spacing": 8,
   },
 
+  // Mic / screen-share in use (PipeWire streams). Hidden when nothing is.
+  // Hover names the app. Doesn't see wlr-screencopy clients, only PipeWire.
+  "privacy": {
+    "icon-size": 14,
+    "icon-spacing": 6,
+    "transition-duration": 250,
+    "modules": [
+      { "type": "screenshare", "tooltip": true, "tooltip-icon-size": 20 },
+      { "type": "audio-in", "tooltip": true, "tooltip-icon-size": 20 },
+    ],
+  },
+
+  // Now playing, from any MPRIS player (Spotify, browser tabs, mpv, ...): the
+  // one that's playing, else the paused one, Spotify first on ties. Hidden
+  // when nothing is. Updates instantly on change, idle otherwise. A script rather than the built-in mpris module, which
+  // got stuck showing a closed player's track (see the script's header).
+  // Click: play/pause · right-click: next · middle-click: show its window.
+  "custom/media": {
+    "exec": "~/.config/waybar/scripts/media.sh",  // long-running, event-driven
+    "return-type": "json",
+    "restart-interval": 5,  // if playerctl ever dies (D-Bus restart), re-follow
+    "format": "{}",
+    "max-length": 32,  // the right side is tight; full details in the tooltip
+    "on-click": "~/.config/waybar/scripts/media.sh play-pause",
+    "on-click-right": "~/.config/waybar/scripts/media.sh next",
+    "on-click-middle": "~/.config/waybar/scripts/media.sh show",
+  },
+
+  // Volume and brightness share one pill. Volume is always shown; hovering it
+  // slides brightness out to its left. Scroll either half to adjust it.
+  "group/levels": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 250,
+      "transition-left-to-right": false,
+      "children-class": "levels-drawer",
+    },
+    "modules": ["pulseaudio", "backlight"],
+  },
+
   "pulseaudio": {
     "format": "{icon} {volume}%",
-    "format-muted": "󰝟 muted",
+    "format-muted": "󰝟",
     "format-bluetooth": "󰂰 {volume}%",
     "format-bluetooth-muted": "󰂲 muted",
     "format-icons": { "headphone": "󰋋", "default": ["󰕿", "󰖀", "󰕾"] },
@@ -111,6 +152,7 @@
     "device": "intel_backlight",
     "format": "{icon} {percent}%",
     "format-icons": ["󰃞", "󰃟", "󰃠"],
+    "tooltip-format": "Brightness {percent}% (laptop panel)",
     "on-scroll-up": "brightnessctl set 2%+",
     "on-scroll-down": "brightnessctl set 2%-",
   },
@@ -119,50 +161,61 @@
     // No "interface" key on purpose: this box has wifi (wlo1), onboard
     // ethernet (eno1) and a USB ethernet adapter, so let waybar follow
     // whichever currently holds the default route.
-    "format-wifi": "󰖩 {essid}",
-    "format-ethernet": "󰈀 {ipaddr}",
-    "format-linked": "󰈀 no IP",
-    "format-disconnected": "󰖪 offline",
+    // Icon only; the network name and addresses are in the tooltip.
+    "format-wifi": "{icon}",
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],  // by signal strength
+    "format-ethernet": "󰈀",
+    "format-linked": "󰈀",
+    "format-disconnected": "󰖪",
+    "tooltip-format-linked": "{ifname}: link up, no IP",
+    "tooltip-format-disconnected": "Offline",
     "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}\n↓{bandwidthDownBits} ↑{bandwidthUpBits}",
     "tooltip-format-ethernet": "{ifname}\n{ipaddr}/{cidr}",
     "on-click": "nm-connection-editor",
   },
 
-  "cpu": {
-    "format": "󰻠 {usage}%",
-    "interval": 3,
-    "tooltip": false,
+  // Tailnet state, for remote access from the phone. Dim icon while connected;
+  // goes loud when tailscaled is down, and shows a count while someone is
+  // logged in over SSH. Hover: peers and sessions. Click: copy the 100.x IP.
+  "custom/tailscale": {
+    "exec": "~/.config/waybar/scripts/tailscale.sh",
+    "return-type": "json",
+    "interval": 10,
+    "signal": 9,
+    "format": "{}",
+    "on-click": "ip=$(tailscale ip -4) && printf %s \"$ip\" | wl-copy && notify-send -t 2000 Tailscale \"Copied $ip\"",
   },
 
-  "temperature": {
-    // Absolute device path, not /sys/class/hwmon/hwmonN — the hwmon numbers
-    // are assigned in probe order and move between boots, which would silently
-    // point this module at the battery or the wifi card instead of the CPU.
-    // temp1_input here is "Package id 0".
-    "hwmon-path-abs": "/sys/devices/platform/coretemp.0/hwmon",
-    "input-filename": "temp1_input",
-    "critical-threshold": 85,
-    "format": "{icon} {temperatureC}°C",
-    "format-critical": "󰸁 {temperatureC}°C",
-    "format-icons": ["󰜗", "󰔏", "󰸁"],
+  // CPU, temperature and RAM folded into one pill: just an icon while all is
+  // well, the offending value(s) appear when something crosses a threshold.
+  // Hover for the full breakdown (incl. dGPU, zram, disk). Click shows/hides
+  // btop, kept running in the sway scratchpad so its graphs have history;
+  // right-click toggles a floating htop (scripts/sysmon-popup.sh).
+  // Thresholds live at the top of sysmon.sh.
+  "custom/sysmon": {
+    "exec": "~/.config/waybar/scripts/sysmon.sh",
+    "return-type": "json",
     "interval": 5,
-  },
-
-  "memory": {
-    "format": "󰍛 {percentage}%",
-    "tooltip-format": "{used:0.1f}G / {total:0.1f}G",
-    "interval": 5,
+    "format": "{}",
+    "on-click": "~/.config/waybar/scripts/sysmon-popup.sh btop",
+    "on-click-right": "~/.config/waybar/scripts/sysmon-popup.sh htop",
   },
 
   "battery": {
     "bat": "BAT1",
     "adapter": "ACAD",
     "states": { "warning": 30, "critical": 15 },
-    "format": "{icon} {capacity}%",
-    "format-charging": "󰂄 {capacity}%",
-    "format-plugged": "󰚥 {capacity}%",
+    // Icon only. On AC it's a plug (or the charging bolt); on battery the
+    // level icon, plus the percentage once it gets low. Hover for details.
+    "format": "{icon}",
+    "format-discharging-warning": "{icon} {capacity}%",
+    "format-discharging-critical": "{icon} {capacity}%",
+    "format-charging": "󰂄",
+    "format-plugged": "󰚥",
+    "format-full": "󰚥",
+    "format-not-charging": "󰚥",
     "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"],
-    "tooltip-format": "{timeTo} ({power:0.1f}W)",
+    "tooltip-format": "Battery {capacity}% — {timeTo}",
   },
 
   "clock": {

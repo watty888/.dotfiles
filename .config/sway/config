@@ -368,6 +368,10 @@ for_window [app_id="^(org\.pulseaudio\.)?pavucontrol$"] floating enable, resize 
 for_window [app_id="^nm-connection-editor$"] floating enable, move position center
 for_window [app_id="^blueman-(manager|adapters|services|sendto)$"] floating enable, resize set 800 560, move position center
 for_window [app_id="^(blueman-applet|nm-applet)$"] floating enable, move position center, focus
+# btop/htop opened from waybar's system-health pill (waybar/scripts/sysmon-popup.sh):
+# a kitty with --class sysmon-popup. Sized in ppt so it fits both the laptop panel
+# and the external monitor.
+for_window [app_id="^sysmon-popup$"] floating enable, resize set width 75 ppt height 80 ppt, move position center, focus
 
 include /etc/sway/config.d/*
 include ~/.config/sway/config.d/*.conf

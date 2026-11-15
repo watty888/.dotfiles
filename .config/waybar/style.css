@@ -130,7 +130,7 @@ window#waybar.hidden {
 
 /* ── Common module chrome ───────────────────────────────────────────────── */
 #language,
-#scratchpad,
+#custom-scratchpad,
 #mode,
 #window,
 #clock,
@@ -139,9 +139,8 @@ window#waybar.hidden {
 #pulseaudio,
 #backlight,
 #network,
-#cpu,
-#temperature,
-#memory,
+#custom-tailscale,
+#custom-sysmon,
 #battery {
   padding: 0 12px;
   margin: 4px 2px;
@@ -192,7 +191,7 @@ window#waybar.empty #window {
 #language             { color: @mauve; font-weight: bold; }
 
 /* Scratchpad count — sits next to the workspaces, so keep it quiet. */
-#scratchpad           { color: @subtext0; }
+#custom-scratchpad    { color: @subtext0; }
 
 #idle_inhibitor       { color: @overlay0; }
 #idle_inhibitor.activated { color: @base; background-color: @teal; }
@@ -207,17 +206,58 @@ window#waybar.empty #window {
 #network.disconnected { color: @base; background-color: @red; }
 #network.linked       { color: @yellow; }
 
-#cpu                  { color: @green; }
-#memory               { color: @mauve; }
+/* Volume + brightness: one pill (the group box); the modules inside it are
+ * bare. Brightness is the drawer child that slides out on hover. */
+#levels {
+  margin: 4px 2px;
+  border-radius: 8px;
+  background-color: @pill;  /* translucent, per theme: glass shows through */
+}
+#levels #pulseaudio,
+#levels #backlight {
+  margin: 0;
+  background-color: transparent;
+}
+#levels #backlight { padding: 0 4px 0 12px; }
 
-#temperature          { color: @teal; }
-#temperature.critical { color: @base; background-color: @red; }
+/* Privacy: only present while the mic or a screen share is live, and loud. */
+#privacy { margin: 4px 2px; }
+#privacy-item {
+  padding: 0 10px;
+  border-radius: 8px;
+  color: @base;
+}
+#privacy-item.audio-in    { background-color: @peach; }
+#privacy-item.screenshare { background-color: @red; }
+
+/* Now playing: quiet text, it's information rather than status. Hidden by
+ * waybar when the script prints nothing. */
+#custom-media {
+  padding: 0 12px;
+  margin: 4px 2px;
+  border-radius: 8px;
+  background-color: @pill;  /* translucent, per theme: glass shows through */
+  color: @subtext0;
+}
+#custom-media.spotify { color: @green; }
+#custom-media.paused  { color: @overlay0; }
+
+/* Tailnet: invisible-ish while fine; remote logins and outages stand out. */
+#custom-tailscale        { color: @overlay0; }
+#custom-tailscale.remote { color: @base; background-color: @peach; font-weight: bold; }
+#custom-tailscale.down   { color: @base; background-color: @red; font-weight: bold; }
+
+/* System health: quiet while normal, loud only when something is hot. */
+#custom-sysmon          { color: @overlay0; }
+#custom-sysmon.warning  { color: @yellow; font-weight: bold; }
+#custom-sysmon.critical { color: @base; background-color: @red; font-weight: bold; }
 
 #battery              { color: @green; }
 #battery.warning      { color: @yellow; }
 #battery.critical     { color: @base; background-color: @red; }
 #battery.charging,
-#battery.plugged      { color: @teal; }
+#battery.plugged,
+#battery.full         { color: @teal; }
 
 /* Only the genuinely urgent states blink. A blinking battery you cannot fix
  * right now is noise; a critical one you cannot ignore is the point. */
