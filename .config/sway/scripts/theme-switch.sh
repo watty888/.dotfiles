@@ -18,6 +18,8 @@
 #   fuzzel    fuzzel/theme.ini         -> themes/{latte,mocha}.ini     (include= in fuzzel.ini)
 #   swaylock  swaylock/theme           -> themes/{latte,mocha}         (turned into flags by lock.sh)
 #   kitty     kitty/current-theme.conf -> themes/catppuccin-{latte,mocha}.conf
+#   btop      btop/themes/current.theme -> catppuccin_{latte,mocha}.theme  (color_theme = "current";
+#             inside themes/ because btop only finds themes by name there)
 #
 # The zsh prompt reads the recorded theme itself (.p10k.zsh, reloaded by a precmd hook in
 # .zshrc), and so does swayimg (swayimg/init.lua, at startup only). Neovim is switched only while it is on a catppuccin flavour, so a different
@@ -55,7 +57,8 @@ link mako/theme               "themes/$theme"
 link fuzzel/theme.ini         "themes/$theme.ini"
 link swaylock/theme           "themes/$theme"
 link kitty/current-theme.conf "themes/catppuccin-$theme.conf"
-# fuzzel and swaylock read their files on every launch; nothing further to do for them.
+link btop/themes/current.theme "catppuccin_$theme.theme"
+# fuzzel, swaylock and btop read their files on every launch; nothing further to do for them.
 
 # ── Recolour what is already running ─────────────────────────────────────────
 # sway: apply the window colours directly. Not `swaymsg reload`: that re-runs every
