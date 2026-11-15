@@ -19,11 +19,14 @@
   "modules-left": ["custom/arch", "sway/workspaces", "custom/scratchpad", "sway/mode", "sway/window"],
   "modules-center": ["clock"],
   "modules-right": [
+    "custom/recorder",
     "privacy",
     "custom/media",
+    "custom/dnd",
     "idle_inhibitor",
     "custom/sysmon",
     "group/levels",
+    "custom/headset",
     "network",
     "custom/tailscale",
     "sway/language",
@@ -97,6 +100,29 @@
     "spacing": 8,
   },
 
+  // Screen recording in progress: red "REC m:ss", click to stop. Absent
+  // otherwise. Driven by ~/.config/sway/scripts/record.sh ($mod+Shift+Ctrl+r),
+  // which signals once a second while recording; nothing runs otherwise.
+  "custom/recorder": {
+    "exec": "~/.config/waybar/scripts/recorder.sh",
+    "return-type": "json",
+    "interval": "once",
+    "signal": 11,
+    "format": "{}",
+    "on-click": "~/.config/sway/scripts/record.sh stop",
+  },
+
+  // Bell-off icon while mako's do-not-disturb mode is on ($mod+Ctrl+n), so
+  // it can't be forgotten; absent otherwise. Click turns it off.
+  "custom/dnd": {
+    "exec": "~/.config/waybar/scripts/dnd.sh",
+    "return-type": "json",
+    "interval": 60,  // fallback; the binding and the click signal it at once
+    "signal": 12,
+    "format": "{}",
+    "on-click": "~/.config/waybar/scripts/dnd.sh off",
+  },
+
   // Mic / screen-share in use (PipeWire streams). Hidden when nothing is.
   // Hover names the app. Doesn't see wlr-screencopy clients, only PipeWire.
   "privacy": {
@@ -135,6 +161,17 @@
       "children-class": "levels-drawer",
     },
     "modules": ["pulseaudio", "backlight"],
+  },
+
+  // Battery of connected Bluetooth headphones (via upower). Absent unless one
+  // is connected and reports a level; icon follows the level, percentage
+  // shown from 20% down. Hover lists devices. Click: blueman-manager.
+  "custom/headset": {
+    "exec": "~/.config/waybar/scripts/headset.sh",
+    "return-type": "json",
+    "restart-interval": 5,
+    "format": "{}",
+    "on-click": "blueman-manager",
   },
 
   "pulseaudio": {

@@ -236,14 +236,21 @@ bindsym $mod+r mode "resize"
     # Special keys to adjust brightness via brightnessctl
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+    # The Fn brightness keys send no usable event on this laptop (both send
+    # the same bare scancode), so $mod+F2/F3 stand in. -n keeps the panel
+    # from reaching 0, which turns the backlight off entirely.
+    bindsym --locked $mod+F2 exec brightnessctl -n set 5%-
+    bindsym --locked $mod+F3 exec brightnessctl set 5%+
     # Special key to take a screenshot with grim
     bindsym Print exec grim
     
     # Screenshots & screen recording
     bindsym $mod+Shift+s exec sh -c 'grim -g "$(slurp -b "#00000055" -c "#1e66f5")" - | wl-copy'
     bindsym $mod+Shift+Ctrl+s exec sh -c 'grim - | wl-copy'
-    bindsym $mod+Shift+Ctrl+r exec wf-recorder -g "$(slurp)" -f ~/Videos/recording_$(date +%F_%H-%M-%S).mp4
-    bindsym $mod+Shift+Ctrl+e exec pkill -INT wf-recorder
+    # Recording goes through record.sh so waybar can show a live REC pill
+    # (click it to stop, too). Saved to ~/Videos/recording_<date>.mp4.
+    bindsym $mod+Shift+Ctrl+r exec ~/.config/sway/scripts/record.sh start
+    bindsym $mod+Shift+Ctrl+e exec ~/.config/sway/scripts/record.sh stop
 
     # Lock the screen using swaylock
     bindsym $mod+Ctrl+l exec $lock
@@ -251,7 +258,9 @@ bindsym $mod+r mode "resize"
     # Notifications (mako)
     bindsym $mod+n exec makoctl dismiss
     bindsym $mod+Shift+n exec makoctl dismiss --all
-    bindsym $mod+Ctrl+n exec makoctl mode -t do-not-disturb
+    # --no-repeat: a toggle; with repeat_delay 250 a slightly long press
+    # would fire it twice (on, then straight back off).
+    bindsym --no-repeat $mod+Ctrl+n exec ~/.config/waybar/scripts/dnd.sh toggle
 
     # Light/dark theme: flips Catppuccin Latte <-> Mocha across sway, waybar,
     # mako, fuzzel, swaylock, kitty, nvim and the zsh prompt.

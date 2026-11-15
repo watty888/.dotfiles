@@ -9,8 +9,11 @@
 
 * {
   /* Same family and size as kitty and fuzzel. The Nerd Font build is required
-   * — every icon in config.jsonc is a private-use-area glyph. */
-  font-family: "JetBrainsMono Nerd Font", monospace;
+   * — every icon in config.jsonc is a private-use-area glyph. The Propo
+   * variant (identical text) gives icons their real width; the plain one
+   * gives them one text cell, which they spill out of to the right, so
+   * icon-only pills looked off-centre. */
+  font-family: "JetBrainsMono Nerd Font Propo", monospace;
   font-size: 11pt;
   min-height: 0;
   border: none;
@@ -140,6 +143,9 @@ window#waybar.hidden {
 #backlight,
 #network,
 #custom-tailscale,
+#custom-recorder,
+#custom-dnd,
+#custom-headset,
 #custom-sysmon,
 #battery {
   padding: 0 12px;
@@ -241,6 +247,17 @@ window#waybar.empty #window {
 }
 #custom-media.spotify { color: @green; }
 #custom-media.paused  { color: @overlay0; }
+
+/* Recording: red and unmissable, it's live capture of the screen. */
+#custom-recorder { color: @base; background-color: @red; font-weight: bold; }
+
+/* Do-not-disturb: a mode you chose, so a calm accent rather than an alarm. */
+#custom-dnd { color: @base; background-color: @mauve; }
+
+/* Headphone battery: quiet until low, like the system-health pill. */
+#custom-headset          { color: @overlay0; }
+#custom-headset.warning  { color: @yellow; font-weight: bold; }
+#custom-headset.critical { color: @base; background-color: @red; font-weight: bold; }
 
 /* Tailnet: invisible-ish while fine; remote logins and outages stand out. */
 #custom-tailscale        { color: @overlay0; }
