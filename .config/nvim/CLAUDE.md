@@ -54,7 +54,7 @@ return {
 | `lua/plugins/dap.lua`         | DAP for Node.js/Next.js (pwa-node attach, port 9230, source maps)                                           |
 | `lua/plugins/mermaid.lua`     | Inline Mermaid preview via Kitty graphics protocol (`<leader>mp`)                                            |
 | `lua/plugins/user.lua`        | Custom Snacks.nvim dashboard header                                                                         |
-| `lua/community.lua`           | AstroCommunity imports: lua, typescript, astro, markdown, prettier, eslint, trouble-nvim, mini-animate, markdown-preview, and the colorscheme packs (catppuccin, tokyonight, kanagawa, rose-pine, gruvbox) |
+| `lua/community.lua`           | AstroCommunity imports: lua, typescript, astro, markdown, prettier, eslint, trouble-nvim, mini-animate, markdown-preview, nvim-surround, and the colorscheme packs (catppuccin, tokyonight, kanagawa, rose-pine, gruvbox) |
 
 ### Colorscheme Switching
 
