@@ -7,9 +7,25 @@ fi
 export ZSH="$HOME/.oh-my-zsh"
 export XDG_CONFIG_HOME="$HOME/.config"
 
+# Homebrew — /opt/homebrew on Apple Silicon macOS, /home/linuxbrew on Linux,
+# absent on most Arch installs. Loaded before Oh My Zsh so that plugins and the
+# tool inits below (fzf, zoxide, nvim) find brew-installed binaries. Guarded:
+# unguarded, a missing brew makes every single shell start with an error.
+for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  if [ -x "$_brew" ]; then
+    eval "$("$_brew" shellenv zsh)"
+    break
+  fi
+done
+unset _brew
+
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-plugins=(git archlinux zsh-autosuggestions zsh-syntax-highlighting fzf-tab)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting fzf-tab)
+case $OSTYPE in
+  darwin*) plugins=(macos $plugins) ;;
+  linux*)  [ -f /etc/arch-release ] && plugins=(archlinux $plugins) ;;
+esac
 
 source $ZSH/oh-my-zsh.sh
 
@@ -20,7 +36,11 @@ setopt INC_APPEND_HISTORY
 
 # fzf integration for Ctrl+R history search
 if command -v fzf &> /dev/null; then
-  if [ -f /usr/share/fzf/key-bindings.zsh ]; then
+  # fzf >= 0.48 ships its own zsh integration (Homebrew's fzf on macOS); the
+  # file paths below are for distro packages that only install the scripts.
+  if fzf --zsh &> /dev/null; then
+    source <(fzf --zsh)
+  elif [ -f /usr/share/fzf/key-bindings.zsh ]; then
     source /usr/share/fzf/key-bindings.zsh
   elif [ -f ~/.fzf/shell/key-bindings.zsh ]; then
     source ~/.fzf/shell/key-bindings.zsh
@@ -71,7 +91,10 @@ pass-unlock() {
   local grip=613E4706D6FB75C2EDAB29BA4B0C27D984D62C58 pw
   local probe=$(find ~/.password-store -name '*.gpg' -print -quit)
   read -rs "pw?pass passphrase: " && print
-  print -r -- "$pw" | /usr/lib/gnupg/gpg-preset-passphrase --preset $grip
+  # Arch installs it under /usr/lib/gnupg, Homebrew under $(brew --prefix)/libexec.
+  local preset=/usr/lib/gnupg/gpg-preset-passphrase
+  [[ -x $preset ]] || preset=${HOMEBREW_PREFIX:-/opt/homebrew}/libexec/gpg-preset-passphrase
+  print -r -- "$pw" | $preset --preset $grip
   unset pw
   if gpg --batch --pinentry-mode error -d "$probe" >/dev/null 2>&1; then
     print "pass unlocked until reboot (pass-lock to lock)"
@@ -94,9 +117,11 @@ alias экзоскелет="nvim"
 export PATH="$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
 
 # zoxide (smart directory jumping)
-eval "$(zoxide init --no-cmd zsh)"
-alias z='__zoxide_z'
-alias zi='__zoxide_zi'
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init --no-cmd zsh)"
+  alias z='__zoxide_z'
+  alias zi='__zoxide_zi'
+fi
 
 # Tool Initialization
 
@@ -129,12 +154,6 @@ envman() {
   [ -n "$1" ] && envman "$@"
 }
 
-# Homebrew (Linuxbrew) — not present on every machine, so guard it. Unguarded,
-# a missing brew makes every single shell start with an error.
-if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
-fi
-
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	command yazi "$@" --cwd-file="$tmp"
@@ -142,9 +161,6 @@ function y() {
 	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
 	rm -f -- "$tmp"
 }
-
-# bun completions
-[ -s "/home/watty/.bun/_bun" ] && source "/home/watty/.bun/_bun"
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
